@@ -322,9 +322,9 @@ function bar() {}
 
 > What is a context? A context is a category of ideas, problems, or activities that the data could be useful within. Data has many different contexts.
 
-> Example: assume we have data that is a brand of running shoes. The possible values for the data are "nike" | "adidas" | "converse". The number of contexts for this data is infinite: sports, shoes, basketball, winning, losing, football, rubber, stitching, running, performance, brands, shoe companies, ad infinitum.
+> Example: assume we have data that is a brand of running shoes. The possible values for the data are "nike" | "adidas" | "converse". The number of contexts for this data is infinite: sports, shoes, basketball, winning, losing, football, rubber, stitching, running, performance, brands, shoe companies, etc.
 
-> Example 2: assume we have data that is the value of π. The number of contexts for this data is infinite: math, geometry, artillery, winning wars, homework, long, memorization, ad infinitum.
+> Example 2: assume we have data that is the value of π. The number of contexts for this data is infinite: math, geometry, artillery, winning wars, homework, long, memorization, etc.
 
 #### Some contexts are more specific than other contexts.
 
@@ -332,7 +332,7 @@ function bar() {}
 
 > Taking the example above using shoe brands, the context of "basketball" is more specific than "sports" because all of the ideas, problems and activities of basketball are also contained within the context of "sports".
 
-Programming Example - the constant `PI` has the context of class `Foo` and the context of method `bar`. The `bar` context is more specific than the `Foo` context because `bar` is contained within `Foo`. Restated, the context of `Foo` contains the context of `bar`.
+Programming Example - the constant `PI` has the context of class `Foo` and the context of method `bar`. The `bar` context is more specific than the `Foo` context because `bar` is contained within `Foo`. Restated, the context of `Foo` contains the context of `bar`, which makes `bar` a sub-context and more specific than `Foo`.
 
 ```javascript
 // context
@@ -347,7 +347,7 @@ class Foo {
 
 #### Some contexts are more relevant than others.
 
-> What is a more relevant context? A relevant context for data is the context that the data is currently useful for. Imagine GPS coordinate data. GPS data could be useful for the context of dropping bombs and for saving baby seals. However, both of these contexts would never be relevant at the same time.
+> What is a more relevant context? A relevant context for data is the context that the data is currently useful for. Imagine GPS coordinate data. GPS data has the contexts of dropping bombs and saving baby seals. However, both of these contexts would never be relevant at the same time.
 
 **[⬆ Table of Contents](#toc)**
 
@@ -355,7 +355,7 @@ class Foo {
 
 ### Naming Data
 
-#### When creating a name for a data identifier, consider the relevant contexts for the referenced data. Next, consider the contexts in the order of their specificity. Next, prefer to create a name by listing these contexts from left to right in order of their specificity.
+#### When creating a name for a data identifier, consider the relevant contexts for the referenced data. Next, consider the relevant contexts in the order of their specificity. Next, prefer to create a name by listing these contexts from left to right in descending order of specificity.
 
 Contexts are nounal because they are _things_.
 
@@ -363,7 +363,7 @@ Contexts are nounal because they are _things_.
 
 If you have more than two contexts in the name, consider if the remaining contexts are necessary.
 
-#### Do not include context that is implicit from the surrounding code in the identifier name.
+#### Do not include a context in a name that is implicit from the surrounding code.
 
 In other words, the context that surrounds a name can be viewed as part of the name; thus, repeating it is unnecessary.
 
@@ -402,18 +402,6 @@ const saladHasRanch;
 
 ### Naming Functions
 
-#### Prefer to name constructor functions like data. They do not start with a verb and are nounal.
-
-> Why? Constructor functions create data and are more similar to data than behavior.
-
-```javascript
-// discouraged
-class foo {}
-
-// preferred
-class Foo {}
-```
-
 #### When naming non-constructor functions, first consider the data that the function acts on. Next, follow the same naming instructions for data identifiers explained above. Next, add an action verb as a prefix to the name. The action verb should describe the function's operation on the data.
 
 This is the only place in names that an action verb appears.
@@ -433,6 +421,18 @@ const obj = {
 };
 const createCar = function () {};
 function testUserData() {}
+```
+
+#### Prefer to name constructor functions like data. They do not start with a verb and are nounal.
+
+> Why? Constructor functions create data and are more similar to data than behavior.
+
+```javascript
+// discouraged
+class foo {}
+
+// preferred
+class Foo {}
 ```
 
 **[⬆ Table of Contents](#toc)**
