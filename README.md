@@ -404,7 +404,7 @@ const saladHasRanch;
 
 #### When naming non-constructor functions, first consider the data that the function acts on. Next, follow the same naming instructions for data identifiers explained above. Next, add an action verb as a prefix to the name. The action verb should describe the function's operation on the data.
 
-This is the only place in names that an action verb appears.
+This is the only place in identifier names that an action verb appears.
 
 Common examples are: "get", "set", "fetch", "remove", "add", "delete", "handle", etc.
 
