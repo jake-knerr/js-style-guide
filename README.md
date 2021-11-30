@@ -258,8 +258,8 @@ const personData;
 
 ```javascript
 // acceptable - everyone knows these abbreviations
-const IBM;
-const NASA;
+const ibm;
+const nasa;
 ```
 
 #### The default word-separation style for JavaScript identifiers is lowerCamelCase.
