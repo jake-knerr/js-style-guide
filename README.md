@@ -2567,7 +2567,7 @@ import "./z";
 import zKls from "./zKls";
 ```
 
-#### It is acceptable to break up a section into sub-sections for clarity.
+#### (Optional) Consider breaking up a section into sub-sections for clarity.
 
 Separate each sub-section with a newline and order them in any way that makes sense.
 
