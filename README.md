@@ -254,14 +254,6 @@ const icon;
 const personData;
 ```
 
-#### Abbreviations, initialisms, and acronyms are acceptable as long as they are familiar to other developers.
-
-```javascript
-// acceptable - everyone knows these abbreviations
-const ibm;
-const nasa;
-```
-
 #### The default word-separation style for JavaScript identifiers is lowerCamelCase.
 
 Exceptions are clearly stated in this guide.
@@ -272,6 +264,14 @@ Exceptions are clearly stated in this guide.
 // lowerCamelCase
 const getColor;
 const fooBar;
+```
+
+#### Abbreviations, initialisms, and acronyms are acceptable as long as they are familiar to other developers.
+
+```javascript
+// acceptable - everyone knows these abbreviations
+const ibm;
+const nasa;
 ```
 
 #### Habitually making all abbreviations (acronyms and initialisms) uppercase is discouraged. Instead, prefer to apply the same naming techniques to abbreviations that are applied to normal words.
@@ -423,9 +423,9 @@ const createCar = function () {};
 function testUserData() {}
 ```
 
-#### Prefer to name constructor functions like data. They do not start with a verb and are nounal.
+#### Prefer to name constructor functions like data. They are nounal and do not start with a verb.
 
-> Why? Constructor functions create data and are more similar to data than behavior.
+> Why? Constructor functions create data (objects) not behavior.
 
 ```javascript
 // discouraged
@@ -449,7 +449,7 @@ The following rules are designed to support this idea. However, thinking beyond 
 
 #### Prefer to declare and initialize variables where they are needed. For variables intended for use in a nested block, prefer to declare them above and as close as possible to the nested block where they are used.
 
-> Why? Now that `let` and `const` are not hoisted, always declaring variables at the top of the enclosing block is no longer needed. Declaring variables where they are needed minimizes their scope, reduces variable span, and reduces variable live time.
+> Why? Since `let` and `const` are not hoisted, always declaring variables at the top of the enclosing block is no longer needed. Declaring variables where they are needed minimizes their scope, reduces variable span, and reduces variable live time.
 
 > However, if in one's discretion, burying a variable declaration and initialization deep within complex code is unclear, then trust your judgment and move the declaration and initialization closer to the top of the enclosing scope.
 
@@ -1901,7 +1901,7 @@ Some tests to determine if a function is getting too large:
 
 > Why prefer smaller functions? In short, easier composition, easier testing, easier reuse, more DRY, clearer control flow, etc. See the single responsibility rule.
 
-> Note, this preference should not be taken to an extreme and make the code hard to comprehend.<br><br>The biggest drawback to small functions is that they can make the code more difficult to understand because the control flow no longer moves in a top-down fashion. Instead, the control flow moves based on function calls, and function calls require the reader to pause their thinking in the main function and jump to a secondary function, comprehend the secondary function, and then jump back to the main function. This can be challenging and is similar to reading a paragraph in a novel that forces you to reference a glossary to comprehend each sentence.<br><br>In short, if breaking up a function is making the code difficult to comprehend, then consider leaving the function intact.
+> Note, this preference should not be taken to an extreme and make the code hard to comprehend.<br><br>The biggest drawback to small functions is that they can make the code more difficult to understand because the control flow no longer moves in a top-down fashion. Instead, the control flow moves based on function calls, and function calls require the reader to pause their thinking in the main function and jump to a secondary function, comprehend the secondary function, and then jump back to the main function. This can be challenging and is similar to reading a paragraph in a novel that forces you to reference a glossary to comprehend each sentence.<br><br>In short, if breaking up a function is making the code difficult to comprehend, then consider leaving the larger function intact.
 
 #### Prefer to break out reusable logic into helper/utility functions.
 
@@ -2181,7 +2181,7 @@ class Kls {
 class Kls {}
 ```
 
-#### Use code documentation to signal that a member is private. Do not use any code conventions like leading underscores.
+#### Do not use any code conventions like leading underscores to signal privacy.
 
 > Why? Since built-in privacy does not exist idiomatically, a code convention is code as documentation, which this guide discourages.
 
@@ -2198,30 +2198,18 @@ class Kls {
 
   _bar() {}
 }
+```
 
-// good
-class Kls {
-  /**
-   * @private
-   */
-  static car() {}
+#### When creating backing variables for use by getters and setters, prefer to name the backing variable by prefixing an underscore to the name.
 
-  constructor() {
-    /**
-     * @private
-     */
-    this.foo;
-  }
+```javascript
+// preferred
+get foo() {
+  return this._foo;
+}
 
-  /**
-   * @private
-   */
-  get impl() {}
-
-  /**
-   * @private
-   */
-  bar() {}
+set foo(value) {
+  this._foo = value;
 }
 ```
 
@@ -2352,19 +2340,6 @@ class Foo {
 
 // good
 function setBar() {}
-```
-
-#### When creating backing variables for use by getters and setters, prefer to name the backing variable by prefixing an underscore to the name.
-
-```javascript
-// preferred
-get foo() {
-  return this._foo;
-}
-
-set foo(value) {
-  this._foo = value;
-}
 ```
 
 **[⬆ Table of Contents](#toc)**
@@ -2590,6 +2565,25 @@ import { x, z } from "./utilitiesA";
 import { A, a } from "./utilitiesZ";
 import "./z";
 import zKls from "./zKls";
+```
+
+#### It is acceptable to break up a section into sub-sections for clarity.
+
+Separate each sub-section with a newline and order them in any way that makes sense.
+
+```javascript
+/*
+  acceptable - even though each import is a local module and should be grouped
+  together; still breaking them up into sub-sections to highlight naming modules
+  versus utility modules
+*/
+import NameA from "./NameA";
+import NameB from "./NameA";
+import NameC from "./NameA";
+
+import { utilityA } from "./utilitiesA";
+import { utilityB } from "./utilitiesB";
+import { utilityB } from "./utilitiesC";
 ```
 
 #### Prefer to sort destructured bindings left to right, alphanumerically — numbers before letters, uppercase before lowercase.
@@ -2850,6 +2844,42 @@ See the law of Demeter.
 
 > Why? This way related modules/files will be close by and easily accessible in the file tree.
 
+#### Prefer to co-locate modules by functionality (what they do) rather than their technical category.
+
+In other words, prefer to keep domain-related modules together instead of grouping them by what type of role they satisfy from an architectural perspective.
+
+> Why? This technique makes it easier to determine where to place modules. Sometimes, a module may not cleanly fit into an architectural role, which makes it difficult to determine where to place it (such modules often end up in `/utilities`). By having folders grouped by functionality, it should be easier to locate where modules should be placed.
+
+```
+// discouraged
+/routes/
+  /api.js
+  /products.js
+  /user.js
+/models/
+  /api.js
+  /products.js
+  /user.js
+/testing
+  /api.js
+  /products.js
+  /user.js
+
+// preferred
+/api
+  /api-routes.js
+  /api-models.js
+  /api-tests.js
+/products
+  /products-routes.js
+  /products-models.js
+  /products-tests.js
+/user
+  /user-routes.js
+  /user-models.js
+  /user-tests.js
+```
+
 **[⬆ Table of Contents](#toc)**
 
 ---
@@ -2977,7 +3007,7 @@ class Color {
   getColor(foo /** string (doc comment) */) {
     // memory leaks can occur here if you are not careful (impl comment)
     let fn = function () {
-      /* TODO - (impl comment) */
+      /* lorem ipsum (impl comment) */
     };
   }
 }
@@ -3157,7 +3187,7 @@ Why? This technique ensures that the comment is visible regardless of the word-w
 // duis aute irure
 ```
 
-#### Use a _TODO_ implementation comment to signify follow-up work.
+#### Use a _TODO_ implementation comment to signify follow-up work. Such comments should appear at the top of the file to call attention to them.
 
 > Why? _TODO_ is the most common convention for action comments.
 
@@ -3288,18 +3318,12 @@ Why? This technique ensures that the description is visible regardless of the wo
 ```javascript
 // discouraged
 /**
- * The following is a very long very long very long comment that does not fit on
- * one line. (not indented)
- *
  * @param {string} - The following is a very long comment that does not fit on
  *   one very long line.
  */
 
 // preferred
 /**
- * The following is a very long very long very long comment that does not fit on
- * one line. (not indented)
- *
  * @param {string} - The following is a very long comment that does not fit on one very long line.
  */
 ```
