@@ -1,6 +1,6 @@
 # JavaScript Style Guide <!-- omit in toc -->
 
-Welcome to my JavaScript Style Guide. This guide aims to be a comprehensive description of Blotli's standards for JavaScript source code. Source code that adheres to the standards in this guide is written in _Blotli Style_.
+Welcome to my JavaScript Style Guide. This guide aims to be a comprehensive description of Blotli's standards for JavaScript source code.
 
 Although this guide is called a style guide, it focuses on more than simply aesthetic issues like formatting. It also provides design guidance — styling with a purpose.
 
