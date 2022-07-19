@@ -2640,12 +2640,12 @@ export const tooltip = {
 ```javascript
 // discouraged
 export const utilities = {
-  add() {},
+  addNumbers() {},
   getColor() {},
 };
 
 // preferred
-export function add() {}
+export function addNumbers() {}
 
 export function getColor() {}
 ```
@@ -2815,15 +2815,6 @@ There are legitimate use cases (shims/polyfills) for modifying built-ins, but th
 ```javascript
 // avoid
 Array.prototype.sum = function () {};
-```
-
-#### Prefer to name application-wide, cross-cutting concerns "managers". In other words, name such modules by using a leading descriptor and a trailing "Manager".
-
-```javascript
-// preferred
-export default class TooltipManager {}
-
-export default class LoggingManager {}
 ```
 
 **[⬆ Table of Contents](#toc)**
@@ -3151,7 +3142,7 @@ export class Foo {}
 export class Foo {}
 ```
 
-#### Single line annotations are only allowed for @type annotations.
+#### Single line annotations are only allowed for @type annotations or type aliases.
 
 > Why? No documentation is necessary since the type is defined elsewhere.
 
@@ -3159,6 +3150,9 @@ export class Foo {}
 // allowed
 /** @type {CustomType} */
 const foo;
+
+// allowed - type alias
+/** @typedef {import("../foo.js").FooType} FooType */
 ```
 
 #### Place a blank line between the JSDoc description and any block tags. Avoid placing empty lines between block tags.
@@ -3238,35 +3232,35 @@ Why? This technique ensures that the description is visible regardless of the wo
  */
 ```
 
-#### Prefer to place spaces around the union character "|".
+#### Spaces around the union character "|" are discouraged.
 
-> Why? Clarity.
+> Why? Improved conciseness.
 
 ```javascript
 // discouraged
-/**
- * @param {string|boolean} SpecialType
- */
-
-// preferred
 /**
  * @param {string | boolean} SpecialType
  */
+
+// preferred
+/**
+ * @param {string|boolean} SpecialType
+ */
 ```
 
-#### Prefer to place spaces around the equal sign "=" in default values.
+#### Spaces around the equal sign "=" in default values are discouraged.
 
-> Why? Clarity.
+> Why? Improved conciseness.
 
 ```javascript
 // discouraged
 /**
- * @prop {string} [prop="a"]
+ * @prop {string} [prop = "a"]
  */
 
 // preferred
 /**
- * @prop {string} [prop = "a"]
+ * @prop {string} [prop="a"]
  */
 ```
 
@@ -3288,7 +3282,7 @@ Why? This technique ensures that the description is visible regardless of the wo
 
 #### Prefer to not use a hyphen before an inline description unless it is required for clarity.
 
-> Why? It is more concise to exclude the hyphen and IDEs change colors for contrast.
+> Why? It is more concise to exclude the hyphen and is already clear since IDEs change colors for contrast.
 
 ```javascript
 // discouraged - inline descriptions have hyphen
@@ -3324,7 +3318,7 @@ Why? This technique ensures that the description is visible regardless of the wo
 export const foo;
 ```
 
-#### Do not worry about sorting types by alpha or any other arbitrary system.
+#### Do not worry about sorting types by alpha or any other arbitrary sorting system.
 
 > Why? This is a hard to maintain abstraction that provides little benefit.
 
@@ -3356,32 +3350,20 @@ import Foo from "bar";
 
 ```javascript
 // discouraged
-/** @type { import("./types").Foo } */
+/** @type {import("./types").Foo } */
 const foo;
 
-/** @type { import("./types").Foo } */
+/** @type {import("./types").Foo } */
 const anotherFoo
 
 // preferred
-/** @typedef { import("./types").Foo } Foo
+/** @typedef {import("./types").Foo } Foo
 
 /** @type {Foo} */
 const foo
 
 /** @type {Foo} */
 const anotherFoo
-```
-
-#### Prefer to put spaces around type import statements.
-
-> Why? Spaces make it easier to read because import statements can get long.
-
-```javascript
-// discouraged
-/** @type {import("./types").Foo} */
-
-// preferred
-/** @type { import("./types").Foo } */
 ```
 
 **[⬆ Table of Contents](#toc)**
