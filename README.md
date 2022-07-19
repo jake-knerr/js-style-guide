@@ -51,6 +51,7 @@ Jake Knerr © Ardisia Labs LLC
   - [Modules](#modules)
   - [Module Imports](#module-imports)
   - [Module Exports](#module-exports)
+  - [When exporting multiple functions from a module that are not strongly-related, prefer to export each function separately rather than as methods of an object.](#when-exporting-multiple-functions-from-a-module-that-are-not-strongly-related-prefer-to-export-each-function-separately-rather-than-as-methods-of-an-object)
   - [Module Concepts](#module-concepts)
   - [Restricted JavaScript Features](#restricted-javascript-features)
 - [Minification](#minification)
@@ -585,7 +586,6 @@ function c() {}
 - **Define dependent members above the members they depend on.**
 - **Keep related API functions like `addEventListener` and `removeEventListener` close together.**
 - **Place public members above private members.**
-- **Order the members alphanumerically.**
 
 > Why? These rules are intended as a catch-all rule to help resolve how to order your code.
 
@@ -616,22 +616,11 @@ const api = {
 // preferred - export (public) statement above module private statement
 export const PI = 3.14159;
 const derivedPi = 22 / 7;
-
-// preferred - sort object properties by alpha
-const api = {
-  getGames () {}
-  getMessages () {}
-  getUsers () {}
-}
-
-// preferred - sort destructuring assignment by alpha
-const { a, b, c, d, e } = obj;
-
-// preferred - sort let declaration statements by alpha
-let A;
-let B;
-let C;
 ```
+
+#### Do not worry about sorting by alpha or any arbitrary ordering system.
+
+> Why? These ordering systems create a lot of overhead for very little gained.
 
 **[⬆ Table of Contents](#toc)**
 
@@ -1751,6 +1740,10 @@ function foo(reqA, reqB, { optA, optB, optC } = {}) {}
 foo(1, 2, { optC: 3 });
 ```
 
+#### For functions where the number of arguments may change in the future, or when required versus optional arguments varies, prefer a single object parameter.
+
+> Why? Simplicity.
+
 #### Parameters do not use default value initializers that create side effects.
 
 > Why? This creates undesirable coupling between function call sites and functions.
@@ -2069,54 +2062,60 @@ function KlsTwo() {}
 
 > Why? This is essentially a restatement of the preference for `class` syntax.
 
-#### Prefer the following order for the methods of a class.
+#### Prefer the following code order inside a class definition.
 
 The order of methods within each section should reflect storybook design as defined earlier in this guide.
 
 > Why? Predictable structure is helpful because it reduces the number of decisions the person writing the code has to make, and it helps the reader navigate to sought-out methods.
 
-1. Overridden Static Getter/Setter Properties.
-1. Static Getter/Setter Properties.
-1. Overridden Static Methods.
-1. Static Methods.
-1. Constructor.
-1. Overridden Getter/Setter Properties.
-1. Getter/Setter Properties.
-1. Overridden Methods.
-1. Methods.
+1. Static public properties
+1. Static private properties
+1. Static public setter/getter
+1. Static private setter/getter
+1. Static public methods
+1. Static private methods
+1. Public properties
+1. Private properties
+1. Public setter/getter
+1. Private setter/getter
+1. Constructor
+1. Public methods
+1. Private methods
+
+> Note - Even though the preference for public methods is above private ones, storybook design may require private methods to be defined above public methods. Storybook design is dispositive.
 
 ```javascript
 // preferred
 class Foo {
-  static get staticProp() {}
+  static a;
 
-  static getClassName() {}
+  static #b;
+
+  static get c() {}
+  static set c(value) {}
+
+  static get #d() {}
+  static set #d(value) {}
+
+  static e() {}
+
+  static #f() {}
+
+  g = 10;
+
+  #h = 20;
+
+  get i() {}
+  set i(value) {}
+
+  get #j() {}
+  set #j(value) {}
 
   constructor() {}
 
-  set prop(value) {}
+  k() {}
 
-  method() {}
-}
-
-class Bar extends Foo {
-  static get staticProp() {}
-
-  static set newStaticProp(value) {}
-
-  static getClassName() {}
-
-  static newStaticMethod() {}
-
-  constructor() {}
-
-  set prop(value) {}
-
-  get newProp() {}
-
-  method() {}
-
-  newMethod() {}
+  #l() {}
 }
 ```
 
@@ -2181,100 +2180,6 @@ class Kls {
 class Kls {}
 ```
 
-#### Do not use any code conventions like leading underscores to signal privacy.
-
-> Why? Since built-in privacy does not exist idiomatically, a code convention is code as documentation, which this guide discourages.
-
-```javascript
-// avoid
-class Kls {
-  static _car() {}
-
-  constructor() {
-    this._foo;
-  }
-
-  get _impl() {}
-
-  _bar() {}
-}
-```
-
-#### When creating backing variables for use by getters and setters, prefer to name the backing variable by prefixing an underscore to the name.
-
-```javascript
-// preferred
-get foo() {
-  return this._foo;
-}
-
-set foo(value) {
-  this._foo = value;
-}
-```
-
-#### Prefer to define all of an object's instance properties in the constructor when the property has an initial value. Place these definitions above any other initialization code.
-
-This includes public and private properties.
-
-> Why? This technique enables a reader to easily locate all of the initial properties on the instance object. If the properties are defined all over the class code, it is difficult to figure out the totality of a class's initial properties. Also, the engine can optimize the performance of properties that are defined by the time the constructor finishes executing.
-
-```javascript
-// discouraged
-class Kls {
-  foo() {
-    if (!this.bar) this.bar = 10;
-
-    return this.bar;
-  }
-}
-
-// preferred
-class Kls {
-  constructor() {
-    this.bar = 10;
-  }
-
-  foo() {
-    return this.bar;
-  }
-}
-```
-
-#### When initializing instance properties in the constructor, prefer to group a sequence of public properties above grouped private properties.
-
-Place an empty line between the groups.
-
-> Why? To provide consistency.
-
-```javascript
-// discouraged
-class Kls {
-  constructor() {
-    super();
-
-    this.publicFoo = 1;
-
-    this.privateBar = 2;
-    this.privateGoo = 2;
-    this.publicCar = 1;
-  }
-}
-
-// preferred
-class Kls {
-  constructor() {
-    super();
-
-    this.publicCar = 1;
-    this.publicFoo = 1;
-
-    this.privateBar = 2;
-    this.privateGoo = 2;
-  }
-}
-```
-
 #### Getters and setters are useful additions to the language. Use them as applicable.
 
 Getter/setter functions are primarily useful in two contexts: (1) using a getter alone to provide read-only access to an object's internal state, and (2) using a getter for read access along with a setter to change internal state.
@@ -2283,15 +2188,15 @@ Getter/setter functions are primarily useful in two contexts: (1) using a getter
 // acceptable
 class Kls {
   constructor() {
-    this._foo = 1;
+    this.#foo = 1;
   }
 
   get() {
-    return this.foo;
+    return this.#foo;
   }
 
   set(value) {
-    this._foo = calcFoo(value);
+    this.#foo = calcFoo(value);
   }
 }
 ```
@@ -2355,6 +2260,7 @@ function setBar() {}
 - `this` is used.
 - The class is library code that is intended for consumption by third parties. Therefore, a standard object creation technique is helpful.
 - A simple technique for inheritance is required.
+- The focus of the class is methods rather than data.
 
 #### Useful criteria for when to use prototypal inheritance over object composition:
 
@@ -2391,35 +2297,25 @@ function double(value) {
 }
 ```
 
-#### When storing internal state in a class, consider storing it on an object referenced via the `this._` instance property.
+#### Prefer to define bound methods as properties rather than using `bind`.
 
-If any private state needs to be exposed, use getter functions.
+When creating instance properties that are functions, place them in the functions section of the class definition rather than the properties section.
 
-> Why? This is a useful way to cut down on the large number of `this` references that can occur when storing state directly on the `this` object. This technique also clearly distinguishes between public and private states.
+> Why? This is a much cleaner syntax.
 
 ```javascript
+// discouraged
 class Kls {
   constructor() {
-    this.a = "a"; // public
-    this.b = "b"; // private
+    this.setProp = this.setProp.bind(this);
   }
+
+  setProp(value) {}
 }
 
-// consider
+// preferred
 class Kls {
-  constructor() {
-    this._ = {
-      a: "a",
-      b: "b",
-    };
-  }
-
-  // use a getter to expose public "a"
-  get a() {
-    const { _: a } = this;
-
-    return a;
-  }
+  setProp = (value) => {};
 }
 ```
 
@@ -2447,13 +2343,11 @@ import { utility } from "./utilities";
 export class Kls {}
 ```
 
-#### A module's file name is the name of the default export. If there is no default export, then use a descriptive lowerCamelCase name.
-
-> Why? This convention simplifies naming files, helps enforce default imports using the same name as the filename (more later), and simplifies locating modules in file/folder trees.
+#### A module's file name is a descriptive lowerCamelCase name. For modules that export a single function, the filename should be the same as the exported function.
 
 ```javascript
-// ColorComponent.js
-export default class ColorComponent {}
+// getColor.js
+export const getColor = () => {};
 ```
 
 #### Prefer to place side-effect causing code that runs when the module is initialized towards the top of the module.
@@ -2526,20 +2420,22 @@ import * as fns from "./fns";
 import { fnA, fnB } from "./fns";
 ```
 
-#### The order of imports is broken up into the following sections:
+#### Prefer to order imports in the following way:
 
+1. **Non-JavaScript files.**
 1. **Built-in (native) modules.**
 1. **Modules in node_modules.**
 1. **Local library modules.**
 1. **Local modules.**
-1. **Non-JavaScript files.**
 
 **Place a blank line between each section.**
 
-> Why are non-JavaScript files placed at the bottom? Initially, they were placed at the top to highlight their uniqueness. However, imported CSS files were bundling in the wrong order leading to CSS specificity issues. Now, for simplicity, all non-Javascript files are placed at the bottom.
+> Why are non-JavaScript files placed at the top? This technique highlights their uniqueness.
 
 ```javascript
 // good
+import "./styles/a.css"; // non-js files
+
 import fs from "fs"; // node.js module
 
 import lib from "library_in_node_modules";
@@ -2547,24 +2443,22 @@ import lib from "library_in_node_modules";
 import { D, d, k } from "/src/vendor/google/d"; // local third-party modules
 
 import { F, f, l } from "F"; // local modules
-
-import "./styles/a.css"; // non-js files
 ```
 
-#### Prefer to sort each section by file name alphanumerically — numbers before letters, uppercase before lowercase.
+#### Do not habitually sort imports.
 
-> Why sort by filename instead of the binding identifier? Because a file only has a single name to sort rather than possibly multiple names for destructured imports.
+> Why? It is a lot of effort for very little gained.
+
+#### Do not habitually sort destructured bindings.
+
+> Why? It is a lot of effort for very little gained.
 
 ```javascript
-// preferred
-import "./A";
-import * as fnsZ from "./fnsZ";
-import "./g";
-import { h, b } from "./utilities1z";
-import { x, z } from "./utilitiesA";
-import { A, a } from "./utilitiesZ";
-import "./z";
-import zKls from "./zKls";
+// discouraged
+import { A, a, b, g, Z, z } from "./utils";
+
+// acceptable
+import { g, Z, b, A, G, a, j } from "./utils";
 ```
 
 #### (Optional) Consider breaking up a section into sub-sections for clarity.
@@ -2584,18 +2478,6 @@ import NameC from "./NameA";
 import { utilityA } from "./utilitiesA";
 import { utilityB } from "./utilitiesB";
 import { utilityB } from "./utilitiesC";
-```
-
-#### Prefer to sort destructured bindings left to right, alphanumerically — numbers before letters, uppercase before lowercase.
-
-> Why? This sorting makes it easier to navigate the bindings.
-
-```javascript
-// discouraged
-import { g, Z, b, A, G, a, j } from "./utils"; // destructured
-
-// preferred
-import { A, a, b, g, Z, z } from "./utils"; // destructured
 ```
 
 #### If importing both a default export and destructured exports from a single module, prefer to use a single import statement. List the default export first.
@@ -2646,36 +2528,17 @@ import Foo from "./Foo";
 
 ### Module Exports
 
-#### Prefer a default export.
+#### Prefer named exports over default exports.
 
-However, modules without a default export are also acceptable if there are multiple exported bindings, and none of them have primacy. For example, it is common for modules that export a set of utility functions to not have a default export.
-
-> Why prefer a default export? This is a tough one: on the one hand, default exports help name the file and encourage smaller modules, which fosters cohesive and orthogonal modules. However, since default exports do not have a default import name, this could lead to inconsistencies for the import name across modules. In totality, default exports help more than they hurt.
+> Why prefer named exports? This is a tough one: on the one hand, default exports help name the file and encourage smaller modules, which fosters cohesive and orthogonal modules. However, since default exports do not have a default import name, this leads to inconsistencies for the import name across modules. Avoid default exports to avoid having to make the decision.
 
 ```javascript
 // preferred
-export default;
-```
+export class Kls {}
 
-#### Using a default export and named exports in the same module is discouraged.
-
-However, if the named exports are strongly related to the default export then using both types of exports is acceptable.
-
-```javascript
 // discouraged
-export const userName = "Jake"; // user name is unrelated to the default export
 
-export default class Button {
-  dispatch({ type: "click" });
-}
-
-// preferred
-export const ButtonEvents = { // strongly related to the default export
-  CLICK: "click"
-}
-export default class Button {
-  dispatch({ type: ButtonEvents.CLICK });
-}
+export default class Kls {}
 ```
 
 #### Avoid exporting directly from an import in a single statement.
@@ -2726,34 +2589,37 @@ export { A };
 export class Foo {}
 ```
 
-#### When exporting a library project, prefer a single index.js file at the top of the project that only re-exports the interface.
+#### When exporting multiple strongly-related library functions from a module, prefer to export them as methods of an object.
 
-This is an exception to the rule that named files are preferred over `index` files.
-
-> Why? This convention makes usage much easier for consumers of your library.
+> Why? This highlights how the functions are related.
 
 ```javascript
-// src/index.js
-import A from "./core/A";
-import { a, b, z } from "./deep/dir/folder/utils";
+// discouraged
+export function getTooltip() {}
+export function setTooltip() {}
 
-export { A, a, b, z };
+// preferred
+export const tooltip = {
+  getTooltip() {},
+  setTooltip() {},
+};
 ```
 
-#### When exporting library functions that may not be used by consumers of the module, prefer the export of functions over object methods.
-
-This convention includes class methods.
+### When exporting multiple functions from a module that are not strongly-related, prefer to export each function separately rather than as methods of an object.
 
 > Why? Because unused functions can be tree shaken more reliably than unused object properties.
 
 ```javascript
 // discouraged
-export class Utilities {
-  static convertXtoY(x) {}
-}
+export const utilities = {
+  add() {},
+  getColor() {},
+};
 
 // preferred
-export function convertXtoY(x) {}
+export function add() {}
+
+export function getColor() {}
 ```
 
 #### Prefer to export values/functions where they are defined.
@@ -3228,7 +3094,7 @@ The terms JSDoc and documentation comments can be used interchangeably.
 /**
  * get ui colors
  *
- * @param {string} type - component type
+ * @param {string} type Component type
  */
 function getColor(type) {}
 
@@ -3236,7 +3102,7 @@ function getColor(type) {}
 /**
  * Retrieves the correct color for UI components.
  *
- * @param {string} type - The type of component.
+ * @param {string} type The type of component.
  */
 function getColor(type) {}
 ```
@@ -3279,7 +3145,7 @@ const foo;
  *
  * @param {string} bar
  *
- * @returns {number} the sum of foo and bar
+ * @returns {number} The sum of foo and bar.
  */
 
 // preferred
@@ -3288,7 +3154,7 @@ const foo;
  *
  * @param {string} foo
  * @param {string} bar
- * @returns {number} the sum of foo and bar
+ * @returns {number} The sum of foo and bar.
  */
 ```
 
@@ -3318,13 +3184,13 @@ Why? This technique ensures that the description is visible regardless of the wo
 ```javascript
 // discouraged
 /**
- * @param {string} - The following is a very long comment that does not fit on
+ * @param {string} X The following is a very long comment that does not fit on
  *   one very long line.
  */
 
 // preferred
 /**
- * @param {string} - The following is a very long comment that does not fit on one very long line.
+ * @param {string} X The following is a very long comment that does not fit on one very long line.
  */
 ```
 
@@ -3430,36 +3296,7 @@ Why? This technique ensures that the description is visible regardless of the wo
 export const foo;
 ```
 
-#### For JSDoc types that are defined together in series, and do not directly reference source code, prefer to sort them alphanumerically.
-
-```javascript
-// discouraged - not sorted by alpha
-/**
- * @typedef {Object} Sigma
- */
-
-/**
- * @typedef {Object} Alpha
- */
-
-/**
- * @typedef {Object} Gamma
- */
-
-// preferred
-
-/**
- * @typedef {Object} Alpha
- */
-
-/**
- * @typedef {Object} Gamma
- */
-
-/**
- * @typedef {Object} Sigma
- */
-```
+#### Do not worry about sorting types by alpha or any other arbitrary system.
 
 #### Avoid placing JSDoc annotations above `import` statements.
 
@@ -3622,9 +3459,17 @@ The only exception is for global types that must be placed in files without sour
 /**
  * Set the magic number.
  *
- * @param {NumberLike} x - The magic number.
+ * @param {NumberLike} x The magic number.
  */
 function foo(x) {}
+```
+
+#### Prefer to place type alias towards the top of a file.
+
+> Why? This way the alias will be available within the entire file and will be easy for the reader to locate.
+
+```javascript
+/** @typedef {import ("./View.js").View} View */
 ```
 
 **[⬆ Table of Contents](#toc)**
