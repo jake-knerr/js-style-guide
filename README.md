@@ -202,7 +202,7 @@ pageB.js;
 
 ### Folder Structure
 
-#### Prefer the following directories for projects destined for distribution as packages:
+#### Consider the following directories for projects destined for distribution as packages:
 
 - `bin` - executables
 - `build` - build code
@@ -212,6 +212,9 @@ pageB.js;
 - `lib` - libraries that are pre-compiled/pre-transpiled
   - `vendor` - 3rd party libraries
 - `src` - project source code; not compiled/transpiled yet
+  - `views` - view related files
+  - `managers` - cross-cutting concerns
+  - `utils` - helpful reuseable functions
 - `test` - testing code
 
 **[⬆ Table of Contents](#toc)**
@@ -2372,10 +2375,12 @@ import { utility } from "./utilities";
 export class Kls {}
 ```
 
-#### A module's file name is a descriptive lowerCamelCase name. For modules that export a single function, prefer a filename that is the same as the exported function name.
+#### A module's file name is a descriptive lowerCamelCase nounal name. Even for modules that oly export a single function, the name should be nounal.
+
+> Why? Files are nouns, not verbs.
 
 ```javascript
-// getColor.js
+// color.js
 export const getColor = () => {};
 ```
 
