@@ -3514,6 +3514,10 @@ Some criteria for a functional-lite approach:
 - Use a point-free style if convenient, but do not get carried away.
 - If using complex functors/monads, consider an explanatory comment because many developers are not familiar with this programming style.
 
+#### Avoid becoming an architectural astronaut.
+
+Obsessing over the perfect folder structure, names, and design will only ensure the application is never finished.
+
 **[⬆ Table of Contents](#toc)**
 
 ---
