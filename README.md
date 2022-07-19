@@ -3350,14 +3350,14 @@ import Foo from "bar";
 
 ```javascript
 // discouraged
-/** @type {import("./types").Foo } */
+/** @type {import("./types").Foo} */
 const foo;
 
-/** @type {import("./types").Foo } */
+/** @type {import("./types").Foo} */
 const anotherFoo
 
 // preferred
-/** @typedef {import("./types").Foo } Foo
+/** @typedef {import("./types").Foo} Foo
 
 /** @type {Foo} */
 const foo
