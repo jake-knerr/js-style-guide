@@ -277,6 +277,8 @@ const nasa;
 
 #### Habitually making all abbreviations (acronyms and initialisms) uppercase is discouraged. Instead, prefer to apply the same naming techniques to abbreviations that are applied to normal words.
 
+The only exception is if the abbreviation appears after the first word in a compound name, then capitalizing the abbreviation is allowed. E.G. `userID, spaceAgencyNASA` are acceptable.
+
 > Why? To be consistent with this guide's naming rules. For example, uppercase has a specific meaning in this guide and contravening this meaning because the name is an abbreviation is confusing.
 
 ```javascript
@@ -291,6 +293,9 @@ const fbi = {}; // lowercase names for objects
 const httpGet = {}; // lowercamelcase for compound names
 class Nasa {} // uppercamelcase for constructor functions
 const userId = 10; // lowercamelcase
+
+// acceptable
+const federalAgencyFBI; // compound name; uppercase abbreviation acceptable
 ```
 
 #### Prefer positive names.
@@ -325,7 +330,7 @@ function bar() {}
 
 > Example: assume we have data that is a brand of running shoes. The possible values for the data are "nike" | "adidas" | "converse". The number of contexts for this data is infinite: sports, shoes, basketball, winning, losing, football, rubber, stitching, running, performance, brands, shoe companies, etc.
 
-> Example 2: assume we have data that is the value of π. The number of contexts for this data is infinite: math, geometry, artillery, winning wars, homework, long, memorization, etc.
+> Example 2: assume we have data that is the value of π. The number of contexts for this data is infinite: math, geometry, artillery, homework, long, memorization, etc.
 
 #### Some contexts are more specific than other contexts.
 
@@ -348,7 +353,7 @@ class Foo {
 
 #### Some contexts are more relevant than others.
 
-> What is a more relevant context? A relevant context for data is the context that the data is currently useful for. Imagine GPS coordinate data. GPS data has the contexts of dropping bombs and saving baby seals. However, both of these contexts would never be relevant at the same time.
+> What is a more relevant context? A relevant context for data is the context that the data is currently useful for. Imagine GPS coordinate data. GPS data has the contexts of dropping bombs and locating endangered baby seals. However, both of these contexts would never be relevant at the same time (I would hope).
 
 **[⬆ Table of Contents](#toc)**
 
@@ -622,6 +627,17 @@ const derivedPi = 22 / 7;
 
 > Why? These ordering systems create a lot of overhead for very little gained.
 
+```javascript
+// discouraged - no need to arbitrarily sort by alpha
+const a;
+const b;
+const c;
+const d;
+const e;
+const f;
+const g;
+```
+
 **[⬆ Table of Contents](#toc)**
 
 ---
@@ -865,7 +881,7 @@ throw "error";
 throw new Error("error");
 ```
 
-#### Prefer to create errors with a message. The message should be in lowercase only and only use punctuation when necessary for clarity.\*\*
+#### Prefer to create errors with a message. The message should be in lowercase only and only use punctuation when necessary for clarity.
 
 > Why? The error message helps to quickly understand the error.
 
@@ -1564,7 +1580,7 @@ function triggerEnterPress() {}
 function clickListener(event) {}
 
 // preferred
-function onClick(event) {}
+function handleClick(event) {}
 ```
 
 #### For events that can be canceled, prefer names that have the present participle `ing` appended to the event name.
@@ -2447,11 +2463,11 @@ import { F, f, l } from "F"; // local modules
 
 #### Do not habitually sort imports.
 
-> Why? It is a lot of effort for very little gained.
+> Why? It is a lot of effort for very little gained and is difficult to maintain.
 
 #### Do not habitually sort destructured bindings.
 
-> Why? It is a lot of effort for very little gained.
+> Why? It is a lot of effort for very little gained and is difficult to maintain.
 
 ```javascript
 // discouraged
@@ -3297,6 +3313,8 @@ export const foo;
 ```
 
 #### Do not worry about sorting types by alpha or any other arbitrary system.
+
+> Why? This is a hard to maintain abstraction that provides little benefit.
 
 #### Avoid placing JSDoc annotations above `import` statements.
 
