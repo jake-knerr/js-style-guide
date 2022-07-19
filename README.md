@@ -51,7 +51,6 @@ Jake Knerr © Ardisia Labs LLC
   - [Modules](#modules)
   - [Module Imports](#module-imports)
   - [Module Exports](#module-exports)
-  - [When exporting multiple functions from a module that are not strongly-related, prefer to export each function separately rather than as methods of an object.](#when-exporting-multiple-functions-from-a-module-that-are-not-strongly-related-prefer-to-export-each-function-separately-rather-than-as-methods-of-an-object)
   - [Module Concepts](#module-concepts)
   - [Restricted JavaScript Features](#restricted-javascript-features)
 - [Minification](#minification)
@@ -2333,6 +2332,20 @@ class Kls {
 class Kls {
   setProp = (value) => {};
 }
+
+// avoid - `setProp` points to a function; should be in the methods section
+class Kls {
+  setProp = (value) => {};
+
+  constructor() {}
+}
+
+// good
+class Kls {
+  constructor() {}
+
+  setProp = (value) => {};
+}
 ```
 
 **[⬆ Table of Contents](#toc)**
@@ -2359,7 +2372,7 @@ import { utility } from "./utilities";
 export class Kls {}
 ```
 
-#### A module's file name is a descriptive lowerCamelCase name. For modules that export a single function, the filename should be the same as the exported function.
+#### A module's file name is a descriptive lowerCamelCase name. For modules that export a single function, prefer a filename that is the same as the exported function name.
 
 ```javascript
 // getColor.js
@@ -2380,7 +2393,7 @@ function longFunc () {
 
 modifyDOM();
 
-// preferred
+// preferred - `modifyDOM` moved towards the top of the module
 import { addStyleRulesToTheDom } from "utils";
 
 modifyDOM();
@@ -2463,11 +2476,11 @@ import { F, f, l } from "F"; // local modules
 
 #### Do not habitually sort imports.
 
-> Why? It is a lot of effort for very little gained and is difficult to maintain.
+> Why? It is a lot of effort for very little gained and is a difficult to maintain abstraction.
 
 #### Do not habitually sort destructured bindings.
 
-> Why? It is a lot of effort for very little gained and is difficult to maintain.
+> Why? It is a lot of effort for very little gained and is a difficult to maintain abstraction.
 
 ```javascript
 // discouraged
@@ -2546,14 +2559,13 @@ import Foo from "./Foo";
 
 #### Prefer named exports over default exports.
 
-> Why prefer named exports? This is a tough one: on the one hand, default exports help name the file and encourage smaller modules, which fosters cohesive and orthogonal modules. However, since default exports do not have a default import name, this leads to inconsistencies for the import name across modules. Avoid default exports to avoid having to make the decision.
+> Why prefer named exports? This is a tough one: on the one hand, default exports help name the file and encourage smaller modules, which fosters cohesive and orthogonal modules. However, since default exports do not have a default import name, this leads to inconsistencies for the import name across modules. It is simpler to avoid default exports.
 
 ```javascript
 // preferred
 export class Kls {}
 
 // discouraged
-
 export default class Kls {}
 ```
 
@@ -2621,7 +2633,7 @@ export const tooltip = {
 };
 ```
 
-### When exporting multiple functions from a module that are not strongly-related, prefer to export each function separately rather than as methods of an object.
+#### When exporting multiple functions from a module that are not strongly-related, prefer to export each function separately rather than as methods of an object.
 
 > Why? Because unused functions can be tree shaken more reliably than unused object properties.
 
