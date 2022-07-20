@@ -213,7 +213,7 @@ pageB.js;
   - `vendor` - 3rd party libraries
 - `src` - project source code; not compiled/transpiled yet
   - `core` - cross-cutting concerns and services
-  - `utils` - pure (or mostly pure) reuseable functions
+  - `utils` - pure (or mostly pure) reuseable functions and classes
   - `views` - view related files
 - `test` - testing code
 
