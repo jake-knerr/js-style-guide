@@ -212,8 +212,8 @@ pageB.js;
 - `lib` - libraries that are pre-compiled/pre-transpiled
   - `vendor` - 3rd party libraries
 - `src` - project source code; not compiled/transpiled yet
-  - `core` - cross-cutting concerns and services
-  - `utils` - pure (or mostly pure) reuseable functions and classes
+  - `core` - cross-cutting services and other shared functionality
+  - `utils` - general, reuseable functions and classes that have minimal side-effects
   - `views` - view related files
 - `test` - testing code
 
