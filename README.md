@@ -27,7 +27,7 @@ Jake Knerr © Ardisia Labs LLC
   - [Identifiers](#identifiers)
   - [Naming Data](#naming-data)
   - [Naming Functions](#naming-functions)
-  - [Naming files](#naming-files)
+  - [Naming Files](#naming-files)
 - [Storybook Design, Code Order](#storybook-design-code-order)
 - [Code as Documentation](#code-as-documentation)
 - [JavaScript Features](#javascript-features)
@@ -445,14 +445,14 @@ class foo {}
 class Foo {}
 ```
 
-### Naming files
+### Naming Files
 
 #### Folders can provide implicit context for file names.
 
 ```
 # discouraged
   /services
-    /access-service.js - "service" implicit from folder
+    /access-service.js - "service" implicit from folder name
 
 # preferred
   /services
