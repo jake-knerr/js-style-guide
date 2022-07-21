@@ -27,6 +27,7 @@ Jake Knerr © Ardisia Labs LLC
   - [Identifiers](#identifiers)
   - [Naming Data](#naming-data)
   - [Naming Functions](#naming-functions)
+  - [Naming files](#naming-files)
 - [Storybook Design, Code Order](#storybook-design-code-order)
 - [Code as Documentation](#code-as-documentation)
 - [JavaScript Features](#javascript-features)
@@ -212,8 +213,8 @@ pageB.js;
 - `lib` - libraries that are pre-compiled/pre-transpiled
   - `vendor` - 3rd party libraries
 - `src` - project source code; not compiled/transpiled yet
-  - `core` - cross-cutting shared functionality (store, router, etc.)
-  - `services` - specific operations intended to change application state
+  - `core` - cross-cutting shared functionality (store, router, icons, etc.)
+  - `services` - specific operations intended to change application state (fetch, updateUser, etc.)
   - `utils` - generalized, reuseable functions and classes where side-effects are incidental
   - `views` - view related files
 - `test` - testing code
@@ -442,6 +443,20 @@ class foo {}
 
 // preferred
 class Foo {}
+```
+
+### Naming files
+
+#### Folders can provide implicit context for file names.
+
+```
+# discouraged
+  /services
+    /access-service.js - "service" implicit from folder
+
+# preferred
+  /services
+    /access.js
 ```
 
 **[⬆ Table of Contents](#toc)**
