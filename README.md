@@ -214,7 +214,7 @@ pageB.js;
   - `vendor` - 3rd party libraries
 - `src` - project source code; not compiled/transpiled yet
   - `core` - cross-cutting shared functionality (store, router, icons, etc.)
-  - `services` - specific operations intended to change application state (fetch, updateUser, etc.)
+  - `services` - specific operations intended to interact with application state (fetch, updateUser, etc.)
   - `utils` - generalized, reuseable functions and classes where side-effects are incidental
   - `views` - view related files
 - `test` - testing code
