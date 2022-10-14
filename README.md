@@ -1,3 +1,7 @@
+Note, when naming named functions, longer names are required to provide context. exported classes have the class name as context so methods can have shorter names.
+
+Named functional names compress so longer is ok.
+
 # JavaScript Style Guide <!-- omit in toc -->
 
 Welcome to my JavaScript Style Guide. This guide aims to be a comprehensive description of my standards for JavaScript source code.
@@ -445,6 +449,22 @@ class foo {}
 class Foo {}
 ```
 
+#### Names for methods of an object typically have shorter names than standalone named functions because methods have the object name as context.
+
+Standalone named functions do not get the implicit context from the object name.
+
+On the plus side, standalone named functions are easily minified.
+
+```javascript
+export class Car {
+  drive() {}
+}
+
+// standalone function name is longer because it lacks the context provided
+// by the class name
+export function driveCar() {}
+```
+
 ### Naming Files
 
 #### Folders can provide implicit context for file names.
@@ -633,7 +653,7 @@ const api = {
 // preferred - place public object method above private method
 const api = {
   getName() {}
-  sortData_ () {}
+  #sortData () {}
 }
 
 // preferred - export (public) statement above module private statement
@@ -2281,6 +2301,19 @@ class Foo {
 function setBar() {}
 ```
 
+#### Use idiomatic private properties and methods for classes.
+
+They help document the code and they are easily compressed by minifiers.
+
+```javascript
+// good
+class Foo {
+  #internal = 10;
+
+  #privSetter() {}
+}
+```
+
 **[⬆ Table of Contents](#toc)**
 
 ---
@@ -2367,6 +2400,13 @@ class Kls {
 }
 ```
 
+#### For mixin classes prefer names using the format: class name + "Mixin".
+
+```javascript
+// good
+export const TooltipMixin = (superClass) => class extends superClass {};
+```
+
 **[⬆ Table of Contents](#toc)**
 
 ---
@@ -2391,7 +2431,7 @@ import { utility } from "./utilities";
 export class Kls {}
 ```
 
-#### A module's file name is a descriptive lowerCamelCase nounal name. Even for modules that oly export a single function, the name should be nounal.
+#### A module's file name is a descriptive lowerCamelCase nounal name. Even for modules that only export a single function, the name should be nounal.
 
 > Why? Files are nouns, not verbs.
 
@@ -2636,6 +2676,31 @@ import C from "C";
 export { A };
 
 export class Foo {}
+```
+
+#### Prefer to export classes over named functions when:
+
+- **Multiple instances of an object may be needed.**
+- **The exported module requires async initialization (not initialized when the code is parsed), or initialization requires inputs.**
+- **A series of components share a uniform initialization technique – for example – a component system.**
+
+In other cases, export named functions or objects.
+
+> Why? The class instantiation technique is clear and concise.
+
+```javascript
+// prefer - app will need many instances
+export class Button {}
+
+// prefer - initialization is indeterminate and requires inputs
+export class InternetDown {
+  constructor(reqArg) {}
+}
+
+// prefer - consistency
+export class Button {}
+export class App {}
+export class DropDown {}
 ```
 
 #### When exporting multiple strongly-related library functions from a module, prefer to export them as methods of an object.
@@ -3147,22 +3212,6 @@ function getColor(type) {}
 function getColor(type) {}
 ```
 
-#### Prefer JSDoc comments that are multiline and have a description for public API properties and functions.
-
-```javascript
-// discouraged
-/** @param {string} str */
-export class Foo {}
-
-// preferred
-/**
- * This is Foo.
- *
- * @param {string} str
- */
-export class Foo {}
-```
-
 #### Single line annotations are only allowed for @type annotations or type aliases.
 
 > Why? No documentation is necessary since the type is defined elsewhere.
@@ -3452,6 +3501,34 @@ export function foo() {
 function bar() {}
 ```
 
+#### Document more than necessary is discouraged.
+
+For example, for class exports there is no need to document private properties or methods. Also, if the name of a public method makes its purpose obvious, then there is no need to write a description of the method.
+
+However, always document parameter types.
+
+> Why? Dogmatic approaches to documentation are hard to maintain and accomplish little.
+
+```javascript
+// discouraged
+export class Foo {
+  /**
+   * This method sets the color of the class.
+   *
+   * @param {string} color Hex representation of the color.
+   */
+  setColor(color) {}
+}
+
+// good - a description of `setColor` is not needed
+export class Foo {
+  /**
+   * @param {string} color Hex representation of the color.
+   */
+  setColor(color) {}
+}
+```
+
 #### Documenting private/non-exported/non-interface code is discouraged. This preference does not include `@type` annotations designed to satisfy a type-checking program.
 
 Prefer to make private code self-documenting, and failing that, use implementation comments to provide guidance.
@@ -3465,7 +3542,7 @@ class Foo {
    * @private
    * @param {string}
    */
-  method() {}
+  #method() {}
 }
 ```
 
