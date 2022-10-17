@@ -2535,7 +2535,7 @@ import { D, d, k } from "/src/vendor/google/d"; // local third-party modules
 import { F, f, l } from "F"; // local modules
 ```
 
-#### Do not habitually sort imports.
+#### Do not habitually sort imports by alpha.
 
 > Why? It is a lot of effort for very little gained and is a difficult to maintain abstraction.
 
@@ -2924,6 +2924,8 @@ function ({someExampleProp: a}) {}
 // assignments
 const a = this.someExample.prop.view.state.a;
 ```
+
+#### Remember that private object properties are easily minified.
 
 **[⬆ Table of Contents](#toc)**
 
@@ -3501,7 +3503,7 @@ export function foo() {
 function bar() {}
 ```
 
-#### Document more than necessary is discouraged.
+#### Documenting more than what is necessary is discouraged.
 
 For example, for class exports there is no need to document private properties or methods. Also, if the name of a public method makes its purpose obvious, then there is no need to write a description of the method.
 
