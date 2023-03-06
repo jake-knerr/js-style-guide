@@ -1,7 +1,3 @@
-Note, when naming named functions, longer names are required to provide context. exported classes have the class name as context so methods can have shorter names.
-
-Named functional names compress so longer is ok.
-
 # JavaScript Style Guide <!-- omit in toc -->
 
 Welcome to my JavaScript Style Guide. This guide aims to be a comprehensive description of my standards for JavaScript source code.
@@ -32,6 +28,7 @@ Jake Knerr © Ardisia Labs LLC
   - [Naming Data](#naming-data)
   - [Naming Functions](#naming-functions)
   - [Naming Files](#naming-files)
+  - [Naming Folders](#naming-folders)
 - [Storybook Design, Code Order](#storybook-design-code-order)
 - [Code as Documentation](#code-as-documentation)
 - [JavaScript Features](#javascript-features)
@@ -169,45 +166,13 @@ const euroSymbol = "€";
 
 > Why? .js is the standard convention.
 
-#### Unless an exception is clearly stated in this guide, prefer named files over _index.js_.
-
-> Why? It is easier to track named files in an IDE, and named files are more descriptive than _index_.
-
-```
-// discouraged
-/utils/math/index.js
-
-// preferred
-utils/math/math.js;
-```
-
-#### Filenames only use letters and numbers. The first character of a filename is a letter. Use UpperCamelCase or lowerCamelCase to separate words.
-
-Whether to use UpperCamelCase or lowerCamelCase is determined by what the file is exporting. Exports will be described in a later section titled "Modules".
-
-> Why alphanumeric filenames? Because this naming scheme ensures the widest compatibility and contrasts with non-js files, which typically use hyphens and/or underscores.
-
-```javascript
-// avoid
-page - a.js;
-UTILITIES_COLOR.js;
-defaultClass.js;
-page_b.js;
-
-// good
-pageA.js;
-utilitiesColor.js;
-DefaultClass.js;
-pageB.js;
-```
-
 **[⬆ Table of Contents](#toc)**
 
 ---
 
 ### Folder Structure
 
-#### Consider the following directories for projects destined for distribution as packages:
+#### Consider the following directories for client-side projects destined for distribution as packages:
 
 - `bin` - executables
 - `build` - build code
@@ -285,9 +250,9 @@ const nasa;
 
 #### Habitually making all abbreviations (acronyms and initialisms) uppercase is discouraged. Instead, prefer to apply the same naming techniques to abbreviations that are applied to normal words.
 
-The only exception is if the abbreviation appears after the first word in a compound name, then capitalizing the abbreviation is allowed. E.G. `userID, spaceAgencyNASA` are acceptable.
-
 > Why? To be consistent with this guide's naming rules. For example, uppercase has a specific meaning in this guide and contravening this meaning because the name is an abbreviation is confusing.
+
+The only exception is if the abbreviation appears after a word in a compound name, then capitalizing the abbreviation is allowed. E.G. `userID, spaceAgencyNASA` are acceptable.
 
 ```javascript
 // discouraged
@@ -467,16 +432,78 @@ export function driveCar() {}
 
 ### Naming Files
 
-#### Folders can provide implicit context for file names.
+#### Filenames only use lowercase letters and numbers. The first character of a filename is a letter. Use train-case to separate words.
+
+Use descriptive names.
+
+> Why alphanumeric filenames? Because this naming scheme is simple.
+
+> Why train case and all lowercase? Simplicity and consistency since all files of all types will use the same simple naming system.
 
 ```
-# discouraged
-  /services
-    /access-service.js - "service" implicit from folder name
+/* avoid */
+pageA.js;
+UTILITIES_COLOR.js;
+defaultClass.js;
+page_b.js;
 
-# preferred
-  /services
-    /access.js
+/* avoid */
+view-page-a.js;
+utils-color.js;
+class-default.js;
+view-page-b.js;
+```
+
+#### Unless an exception is clearly stated in this guide, strongly prefer named files over _index.js_.
+
+> Why? It is easier to track named files in an IDE, and named files are more descriptive than _index_. It is easy to get confused with a sea of `index` files in your IDE tabs.
+
+```
+// discouraged
+/utils/math/index.js
+
+// preferred
+utils/math/utils-math.js;
+```
+
+#### Filenames should carry all the necessary context for the purpose of the file to be obvious to a reader.
+
+Filenames can not rely on folders for implicit context.
+
+> Why? Filenames are in IDE tabs and do not display the additional context of the folders that contain the file or the code within the file. To make it easy to immediately identify the file's identity and purpose, the filename needs to carry the requisite context.
+
+A useful technique to ensure the necessary descriptiveness is to add the name of the parent folder(s) as prefixes to the name of the file.
+
+```
+/* avoid */
+/client
+  /client/auth.js
+/server
+  /server/auth.js
+
+/* good */
+/client
+  /client-auth.js
+/server
+  /server-auth.js
+```
+
+#### Remember that file extensions are a part of the file name and can provide context.
+
+In other words, an `*.ejs` file tells the user the file is a view.
+
+### Naming Folders
+
+#### Folders can have shorter names than files.
+
+> Why? Since folders do not appear in IDE tabs, they viewed in conjunction with their parent folders and inherit the implicit name context of their parent folders.
+
+```
+/* avoid */
+/client/client-auth/
+
+/* good */
+/client/auth/
 ```
 
 **[⬆ Table of Contents](#toc)**
@@ -2431,7 +2458,7 @@ import { utility } from "./utilities";
 export class Kls {}
 ```
 
-#### A module's file name is a descriptive lowerCamelCase nounal name. Even for modules that only export a single function, the name should be nounal.
+#### A module's filename is a descriptive lowerCamelCase nounal name. Even for modules that only export a single function, the name should be nounal.
 
 > Why? Files are nouns, not verbs.
 
