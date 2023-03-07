@@ -467,14 +467,14 @@ The only exception is `index.html` due to how web servers handle such files.
 /utils/math/index.js
 
 // preferred
-utils/math/utils-math.js;
+utils/math/math-utils.js;
 ```
 
-#### Filenames should carry all the necessary context for the purpose of the file to be obvious to a reader.
+#### Filenames should carry all the necessary context for the file to be clear to a reader.
 
 Filenames can not rely on folders for implicit context.
 
-> Why? File names are displayed in IDE tabs that do not display the additional context of the folders that contain the file or the code within the file. To make it easy to immediately identify the file's identity and purpose, the filename needs to carry the requisite context.
+> Why? Since filenames in IDE tabs do not display the additional context of the folders that contain the file or the code within the file, a filename that makes it easy for the read to identify the file's identity and purpose is useful.
 
 ```
 /* avoid */
@@ -485,25 +485,27 @@ Filenames can not rely on folders for implicit context.
 
 /* good */
 /client
-  client-auth.js
+  auth-client.js
 /server
-  server-auth.js
+  auth-server.js
 ```
 
-#### A useful technique to ensure the necessary descriptiveness is to add the name of the parent folder(s) as prefixes to the name of the file.
+#### A technique to ensure that a file name has the necessary descriptiveness is to give the file a descriptive name and then keep appending the parent folders to the name until the file's purpose is clear.
 
-Start the name with the parent folder and keep adding folders until the name is sufficiently descriptive.
+Always add the folder names as postfixes rather than prefixes.
+
+> Why only add folders as postfixes? Because the reader may recognize the file from the initial name and not need to read the folder names.
 
 ```
-/* avoid */
+/* avoid - handlers is unclear*/
 /errors
   /controllers
     handlers.js
 
-/* good */
+/* good - appending parent folders makes the file's purpose clear */
 /errors
   /controllers
-    errors-controllers-handlers.js
+    handlers-controllers-errors.js
 ```
 
 #### Remember that file extensions are a part of the file name and can provide context.
