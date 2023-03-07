@@ -508,7 +508,7 @@ Start the name with the parent folder and keep adding folders until the name is 
 
 #### Remember that file extensions are a part of the file name and can provide context.
 
-In other words, an `*.ejs` file tells the user the file is a view.
+In other words, an `*.js` file tells the reader the file is a JavaScript file and adding "script" to the name is unnecessary.
 
 ### Naming Folders
 
