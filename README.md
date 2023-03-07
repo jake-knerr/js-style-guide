@@ -492,6 +492,8 @@ Filenames can not rely on folders for implicit context.
 
 #### A technique to ensure that a filename has the necessary descriptiveness is to give the file a descriptive name and then keep appending the parent folders to the name until the file's purpose is clear.
 
+When adding a folder name, changing the name from a plural to a singular and vice-versa is fine. E.G. `/services` could become `mysql-service` singular.
+
 Always add the folder names as postfixes rather than prefixes.
 
 > Why only add folders as postfixes? Because the reader may recognize the file from the initial name and not need to read the folder names.
