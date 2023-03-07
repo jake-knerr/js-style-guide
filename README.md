@@ -470,11 +470,11 @@ The only exception is `index.html` due to how web servers handle such files.
 utils/math/math-utils.js;
 ```
 
-#### Filenames should carry all the necessary context for the file to be clear to a reader.
+#### Filenames should carry all the necessary context for the file's purpose to be clear to a reader.
 
 Filenames can not rely on folders for implicit context.
 
-> Why? Since filenames in IDE tabs do not display the additional context of the folders that contain the file or the code within the file, a filename that makes it easy for the read to identify the file's identity and purpose is useful.
+> Why? Since filenames in IDE tabs do not display the additional context of the folders that contain the file or the code within the file, a filename that makes it easy for the reader to identify the file's identity and purpose is useful.
 
 ```
 /* avoid */
@@ -490,7 +490,7 @@ Filenames can not rely on folders for implicit context.
   auth-server.js
 ```
 
-#### A technique to ensure that a file name has the necessary descriptiveness is to give the file a descriptive name and then keep appending the parent folders to the name until the file's purpose is clear.
+#### A technique to ensure that a filename has the necessary descriptiveness is to give the file a descriptive name and then keep appending the parent folders to the name until the file's purpose is clear.
 
 Always add the folder names as postfixes rather than prefixes.
 
@@ -508,7 +508,7 @@ Always add the folder names as postfixes rather than prefixes.
     handlers-controllers-errors.js
 ```
 
-#### Remember that file extensions are a part of the file name and can provide context.
+#### Remember that file extensions are a part of the filename and can provide context.
 
 In other words, an `*.js` file tells the reader the file is a JavaScript file and adding "script" to the name is unnecessary.
 
