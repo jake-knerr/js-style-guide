@@ -490,11 +490,19 @@ Filenames can not rely on folders for implicit context.
   auth-server.js
 ```
 
+#### The descriptive terms in a filename should be listed from left to right in descending order of specificity.
+
+```
+/* avoid */
+server-utils-math.js
+
+/* good */
+math-utils-server.js
+```
+
 #### A technique to ensure that a filename has the necessary descriptiveness is to give the file a descriptive name and then keep appending the parent folders' names until the file's purpose is clear.
 
 When adding a folder name, changing the name from a plural to a singular and vice-versa is fine. E.G. `/services` could become `mysql-service` singular.
-
-Sometimes, a descriptive name is a combination of the parent folder(s) names.
 
 Always add the folder names as postfixes rather than prefixes.
 
