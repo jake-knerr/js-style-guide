@@ -440,6 +440,8 @@ Use descriptive names.
 
 > Why train case and all lowercase? Simplicity and consistency since all files of all types will use the same simple naming system.
 
+> Why no underscores? Underlined filenames and links can obscure the underscore, making it easy to miss.
+
 ```
 /* avoid */
 pageA.js;
