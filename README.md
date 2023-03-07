@@ -481,15 +481,15 @@ A useful technique to ensure the necessary descriptiveness is to add the name of
 ```
 /* avoid */
 /client
-  /client/auth.js
+  /auth.js
 /server
-  /server/auth.js
+  /auth.js
 
 /* good */
 /client
-  /client-auth.js
+  client-auth.js
 /server
-  /server-auth.js
+  server-auth.js
 ```
 
 #### Remember that file extensions are a part of the file name and can provide context.
