@@ -474,7 +474,7 @@ utils/math/utils-math.js;
 
 Filenames can not rely on folders for implicit context.
 
-> Why? Filenames are in IDE tabs and do not display the additional context of the folders that contain the file or the code within the file. To make it easy to immediately identify the file's identity and purpose, the filename needs to carry the requisite context.
+> Why? File names are displayed in IDE tabs and do not display the additional context of the folders that contain the file or the code within the file. To make it easy to immediately identify the file's identity and purpose, the filename needs to carry the requisite context.
 
 A useful technique to ensure the necessary descriptiveness is to add the name of the parent folder(s) as prefixes to the name of the file.
 
