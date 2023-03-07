@@ -494,6 +494,8 @@ Filenames can not rely on folders for implicit context.
 
 When adding a folder name, changing the name from a plural to a singular and vice-versa is fine. E.G. `/services` could become `mysql-service` singular.
 
+Sometimes, a descriptive name is a combination of the parent folder(s) names.
+
 Always add the folder names as postfixes rather than prefixes.
 
 > Why only add folders as postfixes? Because the name reads from the most descriptive to the least descriptive words. A reader may recognize the file from the initial part of the name and stop reading the name.
