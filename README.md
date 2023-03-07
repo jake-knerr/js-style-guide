@@ -476,8 +476,6 @@ Filenames can not rely on folders for implicit context.
 
 > Why? File names are displayed in IDE tabs that do not display the additional context of the folders that contain the file or the code within the file. To make it easy to immediately identify the file's identity and purpose, the filename needs to carry the requisite context.
 
-A useful technique to ensure the necessary descriptiveness is to add the name of the parent folder(s) as prefixes to the name of the file.
-
 ```
 /* avoid */
 /client
@@ -490,6 +488,22 @@ A useful technique to ensure the necessary descriptiveness is to add the name of
   client-auth.js
 /server
   server-auth.js
+```
+
+#### A useful technique to ensure the necessary descriptiveness is to add the name of the parent folder(s) as prefixes to the name of the file.
+
+Start the name with the parent folder and keep adding folders until the name is sufficiently descriptive.
+
+```
+/* avoid */
+/errors
+  /controllers
+    handlers.js
+
+/* good */
+/errors
+  /controllers
+    errors-controllers-handlers.js
 ```
 
 #### Remember that file extensions are a part of the file name and can provide context.
