@@ -490,7 +490,7 @@ Filenames can not rely on folders for implicit context.
   auth-server.js
 ```
 
-#### A technique to ensure that a filename has the necessary descriptiveness is to give the file a descriptive name and then keep appending the parent folders to the name until the file's purpose is clear.
+#### A technique to ensure that a filename has the necessary descriptiveness is to give the file a descriptive name and then keep appending the parent folders' names until the file's purpose is clear.
 
 When adding a folder name, changing the name from a plural to a singular and vice-versa is fine. E.G. `/services` could become `mysql-service` singular.
 
