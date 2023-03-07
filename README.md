@@ -524,6 +524,10 @@ Typically, add the folder names as postfixes rather than prefixes.
 
 In other words, an `*.js` file tells the reader the file is a JavaScript file and adding "script" to the name is unnecessary.
 
+#### Don't overthink file naming. Give the file a name that makes the file's purpose clear without any other information.
+
+The technique of appending parent folder names is just a helpful technique, not a rigid requirement.
+
 ### Naming Folders
 
 #### Folders can have shorter names than files.
