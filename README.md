@@ -496,7 +496,7 @@ When adding a folder name, changing the name from a plural to a singular and vic
 
 Always add the folder names as postfixes rather than prefixes.
 
-> Why only add folders as postfixes? Because the reader may recognize the file from the initial name and not need to read the folder names.
+> Why only add folders as postfixes? Because the name reads from the most descriptive to the least descriptive words. A reader may recognize the file from the initial part of the name and stop reading the name.
 
 ```
 /* avoid - handlers is unclear*/
