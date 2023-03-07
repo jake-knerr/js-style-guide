@@ -458,7 +458,7 @@ view-page-b.js;
 
 #### Strongly prefer named files over _index.\*_ files.
 
-The only exception is `index.html` due to how servers handle such files.
+The only exception is `index.html` due to how web servers handle such files.
 
 > Why? It is easier to track named files in an IDE, and named files are more descriptive than _index_. It is easy to get confused with a sea of `index` files in your IDE tabs.
 
