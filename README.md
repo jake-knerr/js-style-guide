@@ -474,7 +474,7 @@ utils/math/utils-math.js;
 
 Filenames can not rely on folders for implicit context.
 
-> Why? File names are displayed in IDE tabs and do not display the additional context of the folders that contain the file or the code within the file. To make it easy to immediately identify the file's identity and purpose, the filename needs to carry the requisite context.
+> Why? File names are displayed in IDE tabs that do not display the additional context of the folders that contain the file or the code within the file. To make it easy to immediately identify the file's identity and purpose, the filename needs to carry the requisite context.
 
 A useful technique to ensure the necessary descriptiveness is to add the name of the parent folder(s) as prefixes to the name of the file.
 
@@ -500,7 +500,7 @@ In other words, an `*.ejs` file tells the user the file is a view.
 
 #### Folders can have shorter names than files.
 
-> Why? Since folders do not appear in IDE tabs, they viewed in conjunction with their parent folders and inherit the implicit name context of their parent folders.
+> Why? Since folders do not appear in IDE tabs, they are viewed in conjunction with their parent folders and inherit the implicit name context of their parent folders.
 
 ```
 /* avoid */
