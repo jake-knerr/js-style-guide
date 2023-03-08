@@ -520,6 +520,8 @@ math-utils-server.js
 
 Remember that the goal is simple: give files names that make the file's purpose clear.
 
+Be flexible. A rigid naming abstraction will always fail.
+
 ### Naming Folders
 
 #### Folders can have shorter names than files.
