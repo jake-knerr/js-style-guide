@@ -472,6 +472,8 @@ utils/math/math-utils.js;
 
 #### A file's purpose should be clear from the filename alone.
 
+Do not make the filename longer than necessary.
+
 > Why? Since filenames in IDE tabs do not display the additional context of the folders that contain the file or the code within the file, a filename should be easy for the reader to quickly identify the file.
 
 ```
@@ -504,6 +506,8 @@ math-utils-server.js
 
 #### A technique to name a file is to combine parent folders names (or variations of the folder names) with other descriptive terms — or merely combine parent folder names.
 
+This is not a rigid suggestion.
+
 ```
 /* avoid - handlers is unclear*/
 /errors
@@ -518,7 +522,7 @@ math-utils-server.js
 
 #### Don't overthink file naming.
 
-Remember that the goal is simple: give files names that make the file's purpose clear.
+Remember that the goal is simple: give files names that make the file's purpose clear without being longer than necessary.
 
 Be flexible. A rigid naming abstraction will always fail.
 
