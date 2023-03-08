@@ -438,7 +438,7 @@ Use descriptive names.
 
 > Why alphanumeric filenames? Because this naming scheme is simple.
 
-> Why train case and all lowercase? Simplicity and consistency since all files of all types will use the same simple naming system.
+> Why train case and all lowercase? Simplicity and consistency.
 
 > Why no underscores? Underlined filenames and links can obscure the underscore, making it easy to miss.
 
@@ -449,7 +449,7 @@ UTILITIES_COLOR.js;
 defaultClass.js;
 page_b.js;
 
-/* avoid */
+/* good */
 view-page-a.js;
 utils-color.js;
 class-default.js;
@@ -463,18 +463,16 @@ The only exception is `index.html` due to how web servers handle such files.
 > Why? It is easier to track named files in an IDE, and named files are more descriptive than _index_. It is easy to get confused with a sea of `index` files in your IDE tabs.
 
 ```
-// discouraged
+/* discouraged */
 /utils/math/index.js
 
-// preferred
+/* preferred */
 utils/math/math-utils.js;
 ```
 
-#### Filenames should carry all the necessary context for the file's purpose to be clear to a reader.
+#### A file's purpose should be clear from the filename alone.
 
-Filenames can not rely on folders for implicit context.
-
-> Why? Since filenames in IDE tabs do not display the additional context of the folders that contain the file or the code within the file, a filename that makes it easy for the reader to identify the file's identity and purpose is useful.
+> Why? Since filenames in IDE tabs do not display the additional context of the folders that contain the file or the code within the file, a filename should be easy for the reader to quickly identify the file.
 
 ```
 /* avoid */
@@ -490,7 +488,11 @@ Filenames can not rely on folders for implicit context.
   auth-server.js
 ```
 
-#### The descriptive terms in a filename should be listed from left to right in descending order of specificity.
+#### A file's extension is a part of the filename and may provide additional context.
+
+For example, a `*.js` file tells the reader the file is a JavaScript file, and adding "js" to the name is unnecessary. `*.js` already carries the context of a "js" file.
+
+#### Prefer to list the descriptive terms in a filename from left to right in descending order of specificity.
 
 ```
 /* avoid */
@@ -500,13 +502,7 @@ server-utils-math.js
 math-utils-server.js
 ```
 
-#### A technique to ensure that a filename has the necessary descriptiveness is to give the file a specific, descriptive name and then keep appending the parent folders' names until the file's purpose is clear.
-
-When adding a folder's name, changing the name from a plural to a singular and vice-versa is fine. E.G. `/services` could become `mysql-service` singular.
-
-Typically, add the folder names as postfixes rather than prefixes.
-
-> Why typically add folders as postfixes? Because the name reads from the most specific to the least specific terms. The parent folders will typically be less specific than other terms.
+#### A technique to name a file is to combine parent folders names (or variations of the folder names) with other descriptive terms — or merely combine parent folder names.
 
 ```
 /* avoid - handlers is unclear*/
@@ -514,32 +510,32 @@ Typically, add the folder names as postfixes rather than prefixes.
   /controllers
     handlers.js
 
-/* good - appending parent folders makes the file's purpose clear */
+/* good - combining parent folders names makes the file's purpose clear */
 /errors
   /controllers
-    handlers-controllers-errors.js
+    error-controllers.js
 ```
 
-#### Remember that file extensions are a part of the filename and can provide context.
+#### Don't overthink file naming.
 
-In other words, an `*.js` file tells the reader the file is a JavaScript file and adding "script" to the name is unnecessary.
-
-#### Don't overthink file naming. Give the file a name that makes the file's purpose clear without any other information.
-
-The technique of appending parent folder names is just a helpful technique, not a rigid requirement.
+Remember that the goal is simple: give files names that make the file's purpose clear.
 
 ### Naming Folders
 
 #### Folders can have shorter names than files.
 
-> Why? Since folders do not appear in IDE tabs, they are viewed in conjunction with their parent folders and inherit the implicit name context of their parent folders.
+> Why? Since folders are viewed in a tree hierarchy. Tree hierarchies provide additional naming context.
 
 ```
 /* avoid */
-/client/client-auth/
+/client
+  /client-db/
+    db-client.js
 
 /* good */
-/client/auth/
+/client
+  /db/
+    db-client.js
 ```
 
 **[⬆ Table of Contents](#toc)**
