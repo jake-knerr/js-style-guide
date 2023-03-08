@@ -504,9 +504,11 @@ server-utils-math.js
 math-utils-server.js
 ```
 
-#### A technique to name a file is to combine parent folders names (or variations of the folder names) with other descriptive terms — or merely combine parent folder names.
+#### It may be helpful to reference the parent folder names when naming a file.
 
-This is not a rigid suggestion.
+Sometimes, a combination of parent folder names makes a good filename, or appending a parent folder name (or some variation) to another descriptive term makes a good filename.
+
+This is not a rigid prescription. Instead, this is suggested as merely a possibly helpful naming technique.
 
 ```
 /* avoid - handlers is unclear*/
@@ -514,7 +516,7 @@ This is not a rigid suggestion.
   /controllers
     handlers.js
 
-/* good - combining parent folders names makes the file's purpose clear */
+/* good - adding the parent folder name makes the file's purpose clear */
 /errors
   /controllers
     error-controllers.js
