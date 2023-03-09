@@ -436,9 +436,7 @@ export function driveCar() {}
 
 Use descriptive names.
 
-> Why alphanumeric filenames? Because this naming scheme is simple.
-
-> Why train case and all lowercase? Simplicity and consistency.
+> Why use naming schema? Because this naming scheme is simple and consistent.
 
 > Why no underscores? Underlined filenames and links can obscure the underscore, making it easy to miss.
 
@@ -474,7 +472,7 @@ utils/math/math-utils.js;
 
 Do not make the filename longer than necessary.
 
-> Why? Since filenames in IDE tabs do not display the additional context of the folders that contain the file or the code within the file, a filename should be easy for the reader to quickly identify the file.
+> Why? Since filenames in IDE tabs do not display the additional context of the folders that contain the file or the code within the file, a filename allow the reader to quickly identify the file.
 
 ```
 /* avoid */
@@ -493,6 +491,14 @@ Do not make the filename longer than necessary.
 #### A file's extension is a part of the filename and may provide additional context.
 
 For example, a `*.js` file tells the reader the file is a JavaScript file, and adding "js" to the name is unnecessary. `*.js` already carries the context of a "js" file.
+
+```
+/* avoid - ejs files are view templates */
+profile-view-template.ejs
+
+/* good */
+profile-view.ejs
+```
 
 #### Prefer to list the descriptive terms in a filename from left to right in descending order of specificity.
 
@@ -532,7 +538,7 @@ Be flexible. A rigid naming abstraction will always fail.
 
 #### Folders can have shorter names than files.
 
-> Why? Since folders are viewed in a tree hierarchy. Tree hierarchies provide additional naming context.
+> Why? Because folders are viewed in a tree hierarchy. Tree hierarchies provide additional naming context.
 
 ```
 /* avoid */
