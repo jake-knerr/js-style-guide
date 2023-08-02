@@ -53,6 +53,7 @@ Jake Knerr © Ardisia Labs LLC
   - [Modules](#modules)
   - [Module Imports](#module-imports)
   - [Module Exports](#module-exports)
+  - [CJS Modules](#cjs-modules)
   - [Module Concepts](#module-concepts)
   - [Restricted JavaScript Features](#restricted-javascript-features)
 - [Minification](#minification)
@@ -430,6 +431,20 @@ export class Car {
 export function driveCar() {}
 ```
 
+#### Exported functions are named like standalone functions.
+
+> Why? Exported functions are standalone functions. An argument could be made that an exported function name should carry the context of the module it is exported from. However, this is not necessary because the module name is already provided by the import statement.
+
+```javascript
+// avoid
+function handleCar() {}
+
+export const serviceHandleCar = handleCar;
+
+// good
+export function handleCar() {}
+```
+
 ### Naming Files
 
 #### Filenames only use lowercase letters and numbers. The first character of a filename is a letter. Use train-case to separate words.
@@ -483,9 +498,9 @@ Do not make the filename longer than necessary.
 
 /* good */
 /client
-  auth-client.js
+  client-auth.js
 /server
-  auth-server.js
+  server-auth.js
 ```
 
 #### A file's extension is a part of the filename and may provide additional context.
@@ -500,21 +515,15 @@ profile-view-template.ejs
 profile-view.ejs
 ```
 
-#### Prefer to list the descriptive terms in a filename from left to right in descending order of specificity.
-
-```
-/* avoid */
-server-utils-math.js
-
-/* good */
-math-utils-server.js
-```
-
 #### It may be helpful to reference the parent folder names when naming a file.
 
-Sometimes, a combination of parent folder names makes a good filename, or appending a parent folder name (or some variation) to another descriptive term makes a good filename.
+Sometimes prepending parent folder names makes a good filename; or prepending a parent folder name (or some variation) to another descriptive term(s) makes a good filename. Don't blindly prepend parent folders; only do so when they are necessary to make the file's purpose clear. Prepended folder names should be in the same order as they exist in the file hierarchy.
 
-This is not a rigid prescription. Instead, this is suggested as merely a possibly helpful naming technique.
+When prepending parent folder names, be flexible. It is fine to change plural to singular and vice-versa for names. Also, skip prepending folder names that do not provide helpful context.
+
+> Why? Parent folders provide context for a file. Thus, prepending the names mimics the folder hierarchy and the mental mapping for a file.
+
+> Why not append folder names? E.G. `auth-server.js` instead of `server-auth.js`? Because prepending folder names is more consistent with the folder hierarchy and the mental mapping for a file. Also, as a personal preference, I like having related files all having the same prefix.
 
 ```
 /* avoid - handlers is unclear*/
@@ -522,7 +531,10 @@ This is not a rigid prescription. Instead, this is suggested as merely a possibl
   /controllers
     handlers.js
 
-/* good - adding the parent folder name makes the file's purpose clear */
+/*
+  good - prepending parent folders' names make the file's purpose clear from
+  the name alone
+*/
 /errors
   /controllers
     error-controllers.js
@@ -1364,7 +1376,7 @@ const valid = true;
 const isValid = true;
 ```
 
-#### For references to DOM elements, append a "$" to the end of the name.
+#### For references to DOM elements, append a "DOM" to the end of the name.
 
 > Why? Since Javascript is often used alongside the DOM, it is useful to have a quick convention to spot DOM elements in code.
 
@@ -1373,7 +1385,7 @@ const isValid = true;
 const div = document.createElement("div");
 
 // good
-const div$ = document.createElement("div");
+const divDOM = document.createElement("div");
 ```
 
 **[⬆ Table of Contents](#toc)**
@@ -2871,12 +2883,34 @@ const foo = 1;
 export { foo };
 for (;;) {}
 
-// preferred
+// good
 const foo = 1;
 
 export { foo };
 
 for (;;) {}
+```
+
+**[⬆ Table of Contents](#toc)**
+
+---
+
+### CJS Modules
+
+#### If using CJS modules, export inline code using the `exports.*` syntax rather than `module.exports`.
+
+> Why? This is consistent with the the ES modules preference and reduces refactoring time since a change in the name of an exported function does not trigger another change in the `module.exports` props.
+
+```javascript
+// avoid
+function exportMe() {}
+
+module.exports = {
+  exportMe,
+};
+
+// good
+exports.exportMe = function () {};
 ```
 
 **[⬆ Table of Contents](#toc)**
@@ -3511,6 +3545,18 @@ const foo
 const anotherFoo
 ```
 
+#### For the anything/everything type, prefer to use `any` instead of `*`.
+
+> Why? Asterisks can be confusing since they are also used for other purposes.
+
+```javascript
+// discouraged
+/** @type {*} */
+
+// preferred
+/** @type {any} */
+```
+
 **[⬆ Table of Contents](#toc)**
 
 ---
@@ -3540,9 +3586,9 @@ const anotherFoo
  */
 ```
 
-#### Document the interface for a file. For modules, document all exports.
+#### Document the interface for a file. For modules, document all exports. Exported functions and data should have full intellisense support.
 
-This includes types that are indirectly exported.
+This includes types that are indirectly exported. If the code has to change to support intellisense, then change the code.
 
 > Why? This serves the primary purpose of documentation, which is to illustrate how to use the interface.
 
