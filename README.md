@@ -433,7 +433,7 @@ export function driveCar() {}
 
 #### Exported functions are named like standalone functions.
 
-> Why? Exported functions are standalone functions. An argument could be made that an exported function name should carry the context of the module it is exported from. However, this is not necessary because the module name is already provided by the import statement.
+> Why? Exported functions are standalone functions. An argument could be made that an exported function name should carry the context of the module it is exported from. However, this is not necessary because the module path is already provided by the import statement.
 
 ```javascript
 // avoid
