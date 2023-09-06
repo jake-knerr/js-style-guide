@@ -517,7 +517,7 @@ profile-view.ejs
 
 #### It may be helpful to reference the parent folder names when naming a file.
 
-Sometimes prepending parent folder names makes a good filename; or prepending a parent folder name (or some variation) to another descriptive term(s) makes a good filename. Don't blindly prepend parent folders; only do so when they are necessary to make the file's purpose clear. Prepended folder names should be in the same order as they exist in the file hierarchy.
+Sometimes prepending parent folder names makes a good filename; or prepending a parent folder name (or some variation) to another descriptive term(s) makes a good filename. Don't blindly prepend parent folders; only do so when they are necessary to make the file's purpose clear or avoid ambiguity. Prepended folder names should be in the same order as they exist in the file hierarchy.
 
 When prepending parent folder names, be flexible. It is fine to change plural to singular and vice-versa for names. Also, skip prepending folder names that do not provide helpful context.
 
@@ -532,8 +532,8 @@ When prepending parent folder names, be flexible. It is fine to change plural to
     handlers.js
 
 /*
-  good - prepending parent folders' names make the file's purpose clear from
-  the name alone
+  good - prepending parent folders names make the files purpose clear from
+  the name alone and prevents ambiguity
 */
 /errors
   /controllers
@@ -542,7 +542,7 @@ When prepending parent folder names, be flexible. It is fine to change plural to
 
 #### Don't overthink file naming.
 
-Remember that the goal is simple: give files names that make the file's purpose clear without being longer than necessary.
+Remember that the goal is simple: give files names that make the file's purpose clear and resolve ambiguity without being longer than necessary.
 
 Be flexible. A rigid naming abstraction will always fail.
 
