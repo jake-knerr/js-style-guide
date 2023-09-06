@@ -521,23 +521,24 @@ Sometimes prepending parent folder names makes a good filename; or prepending a 
 
 When prepending parent folder names, be flexible. It is fine to change plural to singular and vice-versa for names. Also, skip prepending folder names that do not provide helpful context.
 
-> Why? Parent folders provide context for a file. Thus, prepending the names mimics the folder hierarchy and the mental mapping for a file.
+> Why? Parent folders provide context for a file. Thus, prepending the names mimics the folder hierarchy and the mental mapping for a file. It also immediately prevents any ambiguity that may arise from files with the same name in different folders.
 
 > Why not append folder names? E.G. `auth-server.js` instead of `server-auth.js`? Because prepending folder names is more consistent with the folder hierarchy and the mental mapping for a file. Also, as a personal preference, I like having related files all having the same prefix.
 
 ```
-/* avoid - handlers is unclear*/
+/_ avoid - handlers is unclear_/
 /errors
-  /controllers
-    handlers.js
+/controllers
+handlers.js
 
-/*
-  good - prepending parent folders names make the files purpose clear from
-  the name alone and prevents ambiguity
-*/
+/_
+good - prepending parent folders names make the files purpose clear from
+the name alone and prevents ambiguity
+_/
 /errors
-  /controllers
-    error-controllers.js
+/controllers
+error-controllers.js
+
 ```
 
 #### Don't overthink file naming.
@@ -553,15 +554,17 @@ Be flexible. A rigid naming abstraction will always fail.
 > Why? Because folders are viewed in a tree hierarchy. Tree hierarchies provide additional naming context.
 
 ```
-/* avoid */
-/client
-  /client-db/
-    db-client.js
 
-/* good */
+/_ avoid _/
 /client
-  /db/
-    db-client.js
+/client-db/
+db-client.js
+
+/_ good _/
+/client
+/db/
+db-client.js
+
 ```
 
 **[⬆ Table of Contents](#toc)**
