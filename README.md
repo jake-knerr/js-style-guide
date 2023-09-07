@@ -483,9 +483,9 @@ The only exception is `index.html` due to how web servers handle such files.
 utils/math/math-utils.js;
 ```
 
-#### A file's purpose should be clear from the filename alone.
+#### A file's purpose should be clear from the filename alone, and a filename should be able to resolve any ambiguity that may arise from files with similar purposes in different folders.
 
-Do not make the filename longer than necessary.
+A reader should not have to open the file to determine its purpose.
 
 > Why? Since filenames in IDE tabs do not display the additional context of the folders that contain the file or the code within the file, a filename allow the reader to quickly identify the file.
 
@@ -503,6 +503,32 @@ Do not make the filename longer than necessary.
   server-auth.js
 ```
 
+#### It is helpful to reference the parent folder names when naming a file.
+
+Prepending parent folder names to a filename can help create a purposeful and unambiguous name. Don't blindly prepend parent folders; only do so when they are necessary to make the file's purpose clear or avoid ambiguity. Prepended folder names should be in the same order as they exist in the file hierarchy.
+
+When prepending parent folder names, be flexible. It is fine to change plural to singular and vice-versa for names. Also, skip prepending folder names that do not provide helpful context.
+
+> Why? Parent folders provide context for a file. Thus, prepending the names mimics the folder hierarchy and the mental mapping for a file. It also prevents any ambiguity that may arise from files with similar purposes in different folders.
+
+> Why not append folder names? E.G. `auth-server.js` instead of `server-auth.js`? Because prepending folder names is more consistent with the folder hierarchy and the mental mapping for a file. Also, as a personal preference, I like having related files all having the same prefix.
+
+```
+/_ avoid - handlers is unclear_/
+/errors
+  /controllers
+    handlers.js
+
+/_
+good - prepending parent folders names make the files purpose clear from
+the name alone and prevents ambiguity
+_/
+/errors
+  /controllers
+    error-controllers.js
+
+```
+
 #### A file's extension is a part of the filename and may provide additional context.
 
 For example, a `*.js` file tells the reader the file is a JavaScript file, and adding "js" to the name is unnecessary. `*.js` already carries the context of a "js" file.
@@ -513,32 +539,6 @@ profile-view-template.ejs
 
 /* good */
 profile-view.ejs
-```
-
-#### It may be helpful to reference the parent folder names when naming a file.
-
-Sometimes prepending parent folder names makes a good filename; or prepending a parent folder name (or some variation) to another descriptive term(s) makes a good filename. Don't blindly prepend parent folders; only do so when they are necessary to make the file's purpose clear or avoid ambiguity. Prepended folder names should be in the same order as they exist in the file hierarchy.
-
-When prepending parent folder names, be flexible. It is fine to change plural to singular and vice-versa for names. Also, skip prepending folder names that do not provide helpful context.
-
-> Why? Parent folders provide context for a file. Thus, prepending the names mimics the folder hierarchy and the mental mapping for a file. It also immediately prevents any ambiguity that may arise from files with the same name in different folders.
-
-> Why not append folder names? E.G. `auth-server.js` instead of `server-auth.js`? Because prepending folder names is more consistent with the folder hierarchy and the mental mapping for a file. Also, as a personal preference, I like having related files all having the same prefix.
-
-```
-/_ avoid - handlers is unclear_/
-/errors
-/controllers
-handlers.js
-
-/_
-good - prepending parent folders names make the files purpose clear from
-the name alone and prevents ambiguity
-_/
-/errors
-/controllers
-error-controllers.js
-
 ```
 
 #### Don't overthink file naming.
