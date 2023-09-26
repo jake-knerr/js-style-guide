@@ -55,7 +55,8 @@ Jake Knerr © Ardisia Labs LLC
   - [CJS Modules](#cjs-modules)
   - [Module Concepts](#module-concepts)
   - [Restricted JavaScript Features](#restricted-javascript-features)
-- [Application Structure](#application-structure)
+- [Application Terms \& Structure](#application-terms--structure)
+  - [Client-Side](#client-side)
   - [Node](#node)
 - [Minification](#minification)
 - [Comments and Documentation](#comments-and-documentation)
@@ -2996,7 +2997,15 @@ Array.prototype.sum = function () {};
 
 ---
 
-## Application Structure
+## Application Terms & Structure
+
+### Client-Side
+
+#### Services are modules that add application functionality available to other modules and manage an internal state and/or cause side-effects.
+
+#### Managers are modules that manage an aspect of the application, manage an internal state, may use services, but do not add functionality available to other modules.
+
+#### Utilities are modules that provide functionality that does not manage internal state and do not cause application side-effects.
 
 ### Node
 
