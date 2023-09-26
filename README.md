@@ -3001,11 +3001,13 @@ Array.prototype.sum = function () {};
 
 ### Client-Side
 
-#### Services are modules that add application functionality available to other modules and manage an internal state and/or cause side-effects.
+#### Common top-level folders:
 
-#### Managers are modules that manage an aspect of the application, manage an internal state, may use services, but do not add functionality available to other modules.
-
-#### Utilities are modules that provide functionality that does not manage internal state and do not cause application side-effects.
+- `src/components`
+- `src/services` - modules that add application functionality available to other modules and manage an internal state and/or cause side-effects.
+- `src/managers` - modules that manage an aspect of the application, manage an internal state, may use services, but do not add functionality available to other modules.
+- `src/utils` - modules that provide functionality that does not manage internal state and do not cause application side-effects.
+- `src/types` - shared type definitions, enums, classes, and jsdoc definitions that do not fit cleanly into a feature folder.
 
 ### Node
 
