@@ -2580,20 +2580,18 @@ import { fnA, fnB } from "./fns";
 
 #### Prefer to order imports in the following way:
 
-1. **Non-JavaScript files.**
 1. **Built-in (native) modules.**
 1. **Modules in node_modules.**
 1. **Local library modules.**
 1. **Local modules.**
+1. **Non-JavaScript files.**
 
 **Place a blank line between each section.**
 
-> Why are non-JavaScript files placed at the top? This technique highlights their uniqueness.
+> Why are non-JavaScript files placed at the bottom? Any styles imported by this module are defined after any styles imported by the other module imports. This makes creating super classes that override base styles easier.
 
 ```javascript
 // good
-import "./styles/a.css"; // non-js files
-
 import fs from "fs"; // node.js module
 
 import lib from "library_in_node_modules";
@@ -2601,6 +2599,8 @@ import lib from "library_in_node_modules";
 import { D, d, k } from "/src/vendor/google/d"; // local third-party modules
 
 import { F, f, l } from "F"; // local modules
+
+import "./styles/a.css"; // non-js files
 ```
 
 #### Do not habitually sort imports by alpha.
