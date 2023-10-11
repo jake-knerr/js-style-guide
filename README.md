@@ -271,6 +271,8 @@ let loginSuccess;
 
 Names should be more specific than broad architectural abstractions.
 
+This doesn't mean that you can't use these terms in your code. It means that you should not use these terms in your names.
+
 > Why? These terms are too generic and usually lead to confusion and poor organization.
 
 ### Identifiers
