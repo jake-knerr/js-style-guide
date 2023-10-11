@@ -2393,6 +2393,8 @@ class Foo {
 #### Useful criteria for when to use prototypal inheritance over object composition:
 
 - The entire API of the superclass must be available to consumers of the extended object.
+- The types of arguments stay consistent.
+  - JSDoc doesn't allow extensions to change argument types without re-declaring them. I hate writing code to accommodate JSDoc.
 - Inheritance is intended to be performed by third parties. Inheritance has the advantage of providing a simple mechanism for other users to conform to your implementation.
 
 Generally, object composition is preferred.
