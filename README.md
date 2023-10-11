@@ -48,7 +48,7 @@ Jake Knerr © Ardisia Labs LLC
   - [Arrow Functions](#arrow-functions)
   - [Generator Functions](#generator-functions)
   - [Classes, Constructor Functions](#classes-constructor-functions)
-  - [Class, Constructor Function Concepts](#class-constructor-function-concepts)
+  - [Object Creation, Class, Constructor Function Concepts](#object-creation-class-constructor-function-concepts)
   - [Modules](#modules)
   - [Module Imports](#module-imports)
   - [Module Exports](#module-exports)
@@ -2157,7 +2157,7 @@ function* genFunction(start = 0, end = 100, step = 1) {
 
 This includes using `extends` for prototypal inheritance.
 
-> Why? Although the `class` syntax is primarily syntactic sugar, it is clear and easy to understand. Also, since it is the new standard, it is better understood by other developers than ad-hoc techniques.
+> Why? `class` syntax is clear and easy to understand. Also, since it is the new standard, it is better understood by other developers than ad-hoc techniques.
 
 ```javascript
 // avoid
@@ -2377,18 +2377,23 @@ class Foo {
 
 ---
 
-### Class, Constructor Function Concepts
+### Object Creation, Class, Constructor Function Concepts
 
 #### Useful criteria for when to use constructor functions to create objects:
 
-- The object is not pure data. Pure data objects should be a POJO.
-- Multiple instances of the same type of object may be required.
-- Each instance stores internal data that can vary from instance to instance.
-- `this` is used.
-- Creation requires initialization data.
-- The class is library code that is intended for consumption by third parties. Therefore, a standard object creation technique is helpful.
-- A simple technique for inheritance is required.
-- The focus of the class is methods rather than data, which leverages prototypes.
+Almost never. The only times constructor functions are useful is when they are:
+
+- Required. For example, when using a library that requires a constructor function or extending built-ins.
+- Huge number of objects are created, and the performance of the object creation is critical. In this case, the constructor function can be optimized by moving methods to the prototype.
+- Inheritance is expected by third-party consumers.
+
+> Why?
+
+#### Instead, use object factories.
+
+Avoid the `this` keyword.
+
+> Why?
 
 #### Useful criteria for when to use prototypal inheritance over object composition:
 
@@ -2398,12 +2403,6 @@ class Foo {
 - Inheritance is intended to be performed by third parties. Inheritance has the advantage of providing a simple mechanism for other users to conform to your implementation.
 
 Generally, object composition is preferred.
-
-#### If using prototypal inheritance:
-
-- The Liskov principle must be satisfied.
-- All classes in the inheritance chain must be intended for instantiation. In other words, no abstract classes.
-- Keep the inheritance chain as shallow as possible.
 
 #### Prefer class methods that use the `this` variable.
 
@@ -2890,12 +2889,10 @@ exports.exportMe = function () {};
 
 ### Module Concepts
 
-#### When exporting an API and determining whether to export an object, class, or functions, follow these guidelines:
+#### When exporting an API and determining whether to export an object factory, object, or functions, follow these guidelines:
 
-- **Export class if there are (possibly) multiple instances required, initialization data, you need a consistent technique across a series of related components, or extension may be necessary.**
+- **Export an object factory if there are (possibly) multiple instances required, initialization data, you need a consistent technique across a series of related components, or extension may be necessary.**
 - **Otherwise, prefer to export functions and manage state directly in the module.**
-
-> Why use classes when so many developers hate them. Consistency, clarity, better performance, and better tooling support. JSDoc works much better with classes.
 
 #### Re-export helper modules to keep the API clean.
 
