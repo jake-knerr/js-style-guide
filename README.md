@@ -2897,13 +2897,11 @@ exports.exportMe = function () {};
 
 > Why use classes when so many developers hate them. Consistency, clarity, better performance, and better tooling support. JSDoc works much better with classes.
 
+#### Re-export helper modules to keep the API clean.
+
 #### Prefer highly orthogonal modules.
 
 Minimize how changes in one module force changes in other modules. Try to keep modules independent and decoupled.
-
-#### Create shy modules; modules only talk to friends. Do not reach through a module to get to its friends.
-
-See the law of Demeter.
 
 #### In your project directory structure, prefer to place modules close to the modules that consume them.
 
