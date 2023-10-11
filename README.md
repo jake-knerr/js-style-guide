@@ -2890,7 +2890,7 @@ exports.exportMe = function () {};
 
 #### When exporting an API and determining whether to export an object, class, or functions, follow these guidelines:
 
-- **Export class if there are (possibly) multiple instances required, or you need a consistent technique across components.**
+- **Export class if there are (possibly) multiple instances required, you need a consistent technique across a series of related components, or extension may be necessary.**
 - **Otherwise, prefer to export functions and manage state directly in the module.**
 
 > Why use classes when so many developers hate them. Consistency, clarity, better performance, and better tooling support. JSDoc works much better with classes.
