@@ -55,7 +55,8 @@ Jake Knerr © Ardisia Labs LLC
   - [CJS Modules](#cjs-modules)
   - [Module Concepts](#module-concepts)
   - [Restricted JavaScript Features](#restricted-javascript-features)
-- [Application Terms \& Structure](#application-terms--structure)
+- [Application Suggestions \& Structure](#application-suggestions--structure)
+  - [General](#general)
   - [Client-Side](#client-side)
   - [Node](#node)
 - [Minification](#minification)
@@ -266,6 +267,12 @@ let loginFail;
 let loginSuccess;
 ```
 
+#### Do not use the terms "model", "view", or "controller" in the names of files, folders, variables, function, or anything else.
+
+Names should be more specific than broad architectural abstractions.
+
+> Why? These terms are too generic and usually lead to confusion and poor organization.
+
 ### Identifiers
 
 #### Identifiers (names) in JavaScript refer to data or functions that act on data.
@@ -443,10 +450,10 @@ defaultClass.js;
 page_b.js;
 
 /* good */
-view-page-a.js;
+template-page-a.js;
 utils-color.js;
 class-default.js;
-view-page-b.js;
+template-page-b.js;
 ```
 
 #### Strongly prefer named files over _index.\*_ files.
@@ -483,20 +490,20 @@ A reader should not have to open the file to determine its purpose.
   server-auth.js
 ```
 
-#### It is helpful to reference the parent folder names when naming a file.
+#### It may be helpful to reference the parent folder names when naming a file.
 
-Prepending parent folder names to a filename can help create a purposeful and unambiguous name. Don't blindly prepend parent folders; only do so when they are necessary to make the file's purpose clear or avoid ambiguity. Prepended folder names should be in the same order as they exist in the file hierarchy.
+Appending or prepending parent folder names to a filename can help create a purposeful and unambiguous name. Don't blindly add parent folders; only do so when they are necessary to make the file's purpose clear or avoid ambiguity.
 
-When prepending parent folder names, be flexible. It is fine to change plural to singular and vice-versa for names. Also, skip prepending folder names that do not provide helpful context.
+When adding parent folder names, be flexible. It is fine to change plural to singular and vice-versa for names.
 
-> Why? Parent folders provide context for a file. Thus, prepending the names mimics the folder hierarchy and the mental mapping for a file. It also prevents any ambiguity that may arise from files with similar purposes in different folders.
+> Why? Parent folders provide context for a file. It also prevents any ambiguity that may arise from files with similar purposes in different folders.
 
-> Why not append folder names? E.G. `auth-server.js` instead of `server-auth.js`? Because prepending folder names is more consistent with the folder hierarchy and the mental mapping for a file. Also, as a personal preference, I like having related files all having the same prefix.
+> Should I prepend or append folder names? Do whatever feels more natural. Prepending is more consistent with the folder hierarchy but may feel dissonant.
 
 ```
 /_ avoid - handlers is unclear_/
 /errors
-  /controllers
+  /validation
     handlers.js
 
 /_
@@ -504,9 +511,8 @@ good - prepending parent folders names make the files purpose clear from
 the name alone and prevents ambiguity
 _/
 /errors
-  /controllers
-    error-controllers.js
-
+  /validation
+    error-validation.js OR validation-error.js
 ```
 
 #### A file's extension is a part of the filename and may provide additional context.
@@ -514,11 +520,11 @@ _/
 For example, a `*.js` file tells the reader the file is a JavaScript file, and adding "js" to the name is unnecessary. `*.js` already carries the context of a "js" file.
 
 ```
-/* avoid - ejs files are view templates */
-profile-view-template.ejs
+/* avoid - ejs files are templates */
+profile-page-template.ejs
 
 /* good */
-profile-view.ejs
+profile-page.ejs
 ```
 
 #### Don't overthink file naming.
@@ -2352,23 +2358,6 @@ class Kls {
 }
 ```
 
-#### Do not use naked setters. In other words, do not use setters without the corresponding getter.
-
-If no getter is needed, use a function to set a value instead.
-
-> Why? A naked setter is confusing because a property can typically be accessed.
-
-```javascript
-// avoid - no get
-class Foo {
-  set bar () {}
-}
-
-
-// good
-function setBar() {}
-```
-
 #### Use idiomatic private properties and methods for classes.
 
 They help document the code and they are easily compressed by minifiers.
@@ -2388,18 +2377,20 @@ class Foo {
 
 ### Class, Constructor Function Concepts
 
-#### Useful criteria for when to use constructor functions:
+#### Useful criteria for when to use constructor functions to create objects:
 
+- The object is not pure data. Pure data objects should be a POJO.
 - Multiple instances of the same type of object may be required.
 - Each instance stores internal data that can vary from instance to instance.
 - `this` is used.
+- Creation requires initialization data.
 - The class is library code that is intended for consumption by third parties. Therefore, a standard object creation technique is helpful.
 - A simple technique for inheritance is required.
-- The focus of the class is methods rather than data.
+- The focus of the class is methods rather than data, which leverages prototypes.
 
 #### Useful criteria for when to use prototypal inheritance over object composition:
 
-- Inheritance is expanding the API of the superclass.
+- The entire API of the superclass must be available to consumers of the extended object.
 - Inheritance is intended to be performed by third parties. Inheritance has the advantage of providing a simple mechanism for other users to conform to your implementation.
 
 Generally, object composition is preferred.
@@ -2466,13 +2457,6 @@ class Kls {
 
   setProp = (value) => {};
 }
-```
-
-#### For mixin classes prefer names using the format: class name + "Mixin".
-
-```javascript
-// good
-export const TooltipMixin = (superClass) => class extends superClass {};
 ```
 
 **[⬆ Table of Contents](#toc)**
@@ -2902,6 +2886,13 @@ exports.exportMe = function () {};
 
 ### Module Concepts
 
+#### When exporting an API and determining whether to export an object, class, or functions, follow these guidelines:
+
+- **Export class if initialization data is required or there are (possibly) multiple instances required.**
+- **Otherwise, prefer to export functions and manage state directly in the module.**
+
+> Why use classes when so many developers hate them. Consistency, clarity, better performance, and better tooling support. JSDoc works much better with classes.
+
 #### Prefer highly orthogonal modules.
 
 Minimize how changes in one module force changes in other modules. Try to keep modules independent and decoupled.
@@ -2926,7 +2917,7 @@ In other words, prefer to keep domain-related modules together instead of groupi
   /api.js
   /products.js
   /user.js
-/models/
+/schema/
   /api.js
   /products.js
   /user.js
@@ -2938,15 +2929,15 @@ In other words, prefer to keep domain-related modules together instead of groupi
 // preferred
 /api
   /api-routes.js
-  /api-models.js
+  /api-schema.js
   /api-tests.js
 /products
   /products-routes.js
-  /products-models.js
+  /products-schema.js
   /products-tests.js
 /user
   /user-routes.js
-  /user-models.js
+  /user-schema.js
   /user-tests.js
 ```
 
@@ -2997,16 +2988,33 @@ Array.prototype.sum = function () {};
 
 ---
 
-## Application Terms & Structure
+## Application Suggestions & Structure
+
+### General
+
+#### Services are modules that export functionality and manage an internal state and/or cause side-effects.
+
+Exported functionality that does not manage an internal state or cause side-effects are simply utilities.
+
+Note, the totality of the exported functions are a singular "service". Each function is not a service, and the module does not export "services". The module exports a "service".
+
+#### Helpers are modules that export functionality that is intended to be used in another module.
+
+Helpers are a way to pull out code from a module to make it more readable.
+
+Keep helper modules close to the modules that they are used within. Typically, they are stored inside a sub-folder of the folder containing the consumer module.
+
+#### Utilities are exported pure (or mostly pure) functions that are not specific to your application's business logic.
+
+The utilities folder should be a toolbox that you can ideally lift and put in another project with minimal effort.
 
 ### Client-Side
 
-#### Common top-level folders:
+#### Common src folders:
 
 - `src/components`
-- `src/services` - modules that add application functionality available to other modules and manage an internal state and/or cause side-effects.
-- `src/managers` - modules that manage an aspect of the application, manage an internal state, may use services, but do not add functionality available to other modules.
-- `src/utils` - modules that provide functionality that does not manage internal state and do not cause application side-effects.
+- `src/services` - modules that add application functionality for different features of the SPA.
+- `src/utils`
 - `src/types` - shared type definitions, enums, classes, and jsdoc definitions that do not fit cleanly into a feature folder.
 
 ### Node
@@ -3031,37 +3039,32 @@ server.js
 - `/types` - shared type definitions, enums, classes, and jsdoc definitions that do not fit cleanly into a feature folder.
 - `/utils` - shared utils.
 - `/validators` - shared validators.
+- `/public` - static files accessible by name.
 
 #### Each top-level feature/domain folder prefers these sub-folders:
 
-- `/routes` - post requests should use CRUD prefixes in the url. E.G. `/create-topic`
-- `/controllers` - HTTP functions. The only function types that accept `req`, `res`,and `session` objects.
+- `/routes` - Post requests should use CRUD prefixes in the url. E.G. `/create-topic`
+- `/handlers` - Controllers. The only function types that can accept `req`, `res`,and `session` objects.
   - Prefer thin controllers and put business logic in the services.
     - Controllers should just concern themselves with HTTP and data shape validation.
   - Responses prefer a JSON response with the following signature: `{ok: boolean, error: string|string[]}`;
   - Exported functions use `handleXXX` as a naming scheme.
-- `/models` - all exported functions use CRUD prefix names like `readData`, `updateData`, etc. Models are "dumb" and use simple CRUD functions. The services are smart.
+- `/data` - All exported functions use CRUD prefix names like `readData`, `updateData`, etc. Models are "dumb" and use simple CRUD functions. The services are smart.
   - Models are the gateway to the persistence layer. All SQL/DB code is in model functions.
   - Prefer the following top-down order for exported functions: `read/update/create/delete`.
-  - Domain entities are defined in models. E.G. `User`, `Car`, `Customer`.
-- `/services` - exported functions that are the API that each feature uses to communicate with each-other, and they are the gateway to the model. Services are "smart" and models are "dumb". They provide the API for features to interact with one-another. They also provide the data that the controllers use.
+  - Domain entities are defined in types. E.G. `User`, `Car`, `Customer`.
+- `/services` - Domain level exported functions that are the API that each feature uses to communicate with each-other, and they are the gateway to the model. Services are "smart" and models are "dumb". They provide the API for features to interact with one-another. They also provide the data that the controllers use.
   - When deciding which service a function belongs to, consider the data. What data is being mutated, created, or read? What service does this data fit into the best?
   - Prefer the following top-down function order: `get/set/add/remove`.
-- `/handlers` - general handler functions that do not cleanly fit into a more specific feature folder.
-  - Exported functions are named using `handleXXX` as a naming scheme.
-- `/views` - Templates and static view files.
-- `/src` - source files for any transpiled, compiled, or bundled libraries.
+- `/pages` - Templates and static view files.
+- `/src` - Source files for any transpiled, compiled, or bundled libraries.
   - Even for multiple discrete libraries, prefer to put them all in a single `/src` folder per feature.
-- `/public` - static files accessible by name.
-  - Mount specific folders in `/public/*` to specific routes. This makes the files' locations clear, allows one to mount static assets off the main router increasing 404 performance, and makes it easier to signal to the CDN what to cache. E.G. `/public/assets/` mounted to URL `/assets`. If mounting a folder to the root of the domain, put the files in a`/public/root` folder.
-    - `/public/assets` - static files.
-    - `/public/root` - files accessible from root of domain.
-- `/validators` - all exported functions use `validateXXX` as a naming scheme. They validate and sanitize data in requests.
-  - Validators are middleware used to validate data before it gets to the controllers.
+- `/validators` - All exported functions use `validateXXX` as a naming scheme. They validate and sanitize data in requests.
+  - Validators are middleware used to validate data before it gets to the services.
   - They validate the shape of data so typically there are no hits to the database or services.
-  - For errors, either throw `400`|`500` for tampering, or errors in an array on the `Request` object for handling by the controllers.
-- `/types` - enums, classes, and jsdoc definitions that are specific to the feature, and can be used by other features. For data, prefer to place it in the model.
-- `/utils` - feature specific utilities.
+  - For errors, either throw `400`|`500` for tampering, or errors in an array on the `Request` object for handling by controllers.
+- `/types` - Enums, classes, and jsdoc definitions that are specific to the feature, and can be used by other features.
+- `/utils` - Feature specific utilities.
 
 **[⬆ Table of Contents](#toc)**
 
@@ -3753,7 +3756,7 @@ function foo(x) {}
 > Why? This way the alias will be available within the entire file and will be easy for the reader to locate.
 
 ```javascript
-/** @typedef {import ("./View.js").View} View */
+/** @typedef {import ("./Component.js").Component} Component */
 ```
 
 **[⬆ Table of Contents](#toc)**
