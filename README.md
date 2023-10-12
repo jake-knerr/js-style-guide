@@ -225,8 +225,8 @@ const fooBar;
 #### Abbreviations, initialisms, and acronyms are acceptable as long as they are familiar to other developers.
 
 ```javascript
-// acceptable - everyone knows these abbreviations
-const ibm;
+// acceptable - nearly everyone knows these abbreviations
+const usa;
 const nasa;
 ```
 
@@ -271,7 +271,7 @@ let loginSuccess;
 
 Names should be more specific than broad architectural abstractions.
 
-This doesn't mean that you can't use these terms in your code. It means that you should not use these terms in your names.
+This doesn't mean that one should not use these terms in your code. It means that you should not use these terms in your names.
 
 > Why? These terms are too generic and usually lead to confusion and poor organization.
 
@@ -339,12 +339,12 @@ In other words, the context that surrounds a name can be viewed as part of the n
 > Note, even the file system can provide implicit context.
 
 ```javascript
-// avoid - user profile context is clear - unnecessary
+// avoid
 function createUserProfile() {
   const userProfileId = 10;
 }
 
-// good
+// good - user profile context is clear - unnecessary
 function createUserProfile() {
   const id = 10;
 }
@@ -394,7 +394,7 @@ function testUserData() {}
 
 #### Prefer to name constructor functions like data. They are nounal and do not start with a verb.
 
-> Why? Constructor functions create data (objects) not behavior.
+> Why? Constructor functions create data (objects).
 
 ```javascript
 // discouraged
@@ -412,6 +412,7 @@ On the plus side, standalone named functions are easily minified.
 
 ```javascript
 export class Car {
+  // drive inherits the context of Car
   drive() {}
 }
 
@@ -428,7 +429,7 @@ export function driveCar() {}
 // avoid
 function handleCar() {}
 
-export const serviceHandleCar = handleCar;
+export const handleCarInMyModule = handleCar;
 
 // good
 export function handleCar() {}
@@ -439,8 +440,6 @@ export function handleCar() {}
 #### Filenames only use lowercase letters and numbers. The first character of a filename is a letter. Use train-case to separate words.
 
 Use descriptive names.
-
-> Why use naming schema? Because this naming scheme is simple and consistent.
 
 > Why no underscores? Underlined filenames and links can obscure the underscore, making it easy to miss.
 
@@ -476,7 +475,7 @@ utils/math/math-utils.js;
 
 A reader should not have to open the file to determine its purpose.
 
-> Why? Since filenames in IDE tabs do not display the additional context of the folders that contain the file or the code within the file, a filename allow the reader to quickly identify the file.
+> Why? Since filenames in IDE tabs do not display the additional context of the folders that contain the file or the code within the file, a filename should allow the reader to easily identify the file's purpose.
 
 ```
 /* avoid */
@@ -496,25 +495,23 @@ A reader should not have to open the file to determine its purpose.
 
 Appending or prepending parent folder names to a filename can help create a purposeful and unambiguous name. Don't blindly add parent folders; only do so when they are necessary to make the file's purpose clear or avoid ambiguity.
 
-When adding parent folder names, be flexible. It is fine to change plural to singular and vice-versa for names.
+When adding parent folder names, be flexible. It is fine to change plural names to singular names and vice-versa.
 
-> Why? Parent folders provide context for a file. It also prevents any ambiguity that may arise from files with similar purposes in different folders.
-
-> Should I prepend or append folder names? Do whatever feels more natural. Prepending is more consistent with the folder hierarchy but may feel dissonant.
+> Should I prepend or append parent folder names? Do whatever feels more natural. Prepending is more consistent with the folder hierarchy but may feel dissonant.
 
 ```
-/_ avoid - handlers is unclear_/
+/* avoid - handlers is unclear */
 /errors
   /validation
     handlers.js
 
-/_
-good - prepending parent folders names make the files purpose clear from
-the name alone and prevents ambiguity
-_/
+/*
+  good - adding parent folders names make the files purpose clear from the name
+  alone and prevents ambiguity
+*/
 /errors
   /validation
-    error-validation.js OR validation-error.js
+    validation-error-handlers.js OR handlers-validation-errors.js
 ```
 
 #### A file's extension is a part of the filename and may provide additional context.
@@ -543,15 +540,15 @@ Be flexible. A rigid naming abstraction will always fail.
 
 ```
 
-/_ avoid _/
+/* avoid - no need to prepend `client-` to `db` */
 /client
-/client-db/
-db-client.js
+  /client-db/
+    db-client.js
 
-/_ good _/
+/* good */
 /client
-/db/
-db-client.js
+  /db/
+    db-client.js
 
 ```
 
@@ -615,7 +612,7 @@ When a function has multiple call sites, place the function definition as close 
 
 This rule applies to functions defined on an object literal, class methods, function expressions, and function declarations across a module.
 
-> Why? Using this technique, function calls are typically encountered in the code before the function is defined. Therefore, the reader may be able to determine the purpose of the function from the name alone. This way, if the reader encounters the function definition below they have the option of skipping peering into the implementation; thus saving time and brainpower.<br><br>When this technique is coupled with declaring module exports where they are defined, the module presents itself in an auto-documenting manner.
+> Why? When using this technique, function calls are typically encountered in the code before the function is defined. Therefore, the reader may be able to determine the purpose of the function from the name alone. This way, if the reader encounters the function definition below they have the option of skipping peering into the implementation; thus saving time and brainpower.<br><br>When this technique is coupled with declaring module exports where they are defined, the module presents itself in an auto-documenting manner.
 
 ```javascript
 // preferred
@@ -702,7 +699,7 @@ function c() {}
 
 #### When ordering sets of statements/data, which includes variable declarations, object (including class) methods/properties, values in a destructuring assignment, or any other set of statements/data, prefer to define the order using the following guidelines in descending order of importance:
 
-- **Define dependent members above the members they depend on.**
+- **Define dependent members above the members they depend on (if possible).**
 - **Keep related API functions like `addEventListener` and `removeEventListener` close together.**
 - **Place public members above private members.**
 
@@ -758,34 +755,15 @@ const g;
 
 ## Code as Documentation
 
-#### Prefer to not add unnecessary code for documentation. Use code comments or documentation comments (more later) instead.
+#### Adding unnecessary code for documentation purposes is discouraged. Use code comments or documentation comments (more later) instead.
 
-Note that clarity and documentation are different concepts. Code that substantially improves clarity is generally preferred. Code that exists to document how the code works or how the code is used is discouraged.
+Note that clarity and documentation are different concepts. Additional code that substantially improves clarity is generally preferred. Additional code that exists to document how the code works or how the code is used is discouraged.
 
 This is a key rule that will help guide many decisions as to how to write code.
 
 > Why? Unnecessary code for documentation can ultimately result in code that is less clear due to there being more code. Also, unnecessary code hurts performance due to larger package sizes.
 
 ```javascript
-// discouraged
-class Foo {
-  get a() {
-    return this._a;
-  }
-
-  set a(value) {
-    this._a = a;
-  }
-}
-
-// preferred - the getter/setter is doing nothing except documenting the
-// property a; instead use documentation comments
-class Foo {
-  /**
-   * @name a
-   */
-}
-
 // discouraged - getA() is doing nothing but retrieving obj.a
 const obj = {
   a: 10,
@@ -802,7 +780,7 @@ const obj = {
   a: 10,
 };
 
-// discouraged - no behavior; just creating references
+// discouraged - no behavior; just creating references to document they exist
 class Data {
   constructor() {
     this.a;
@@ -3003,7 +2981,7 @@ Helpers are a way to pull out code from a module to make it more readable.
 
 Keep helper modules close to the modules that they are used within. Typically, they are stored inside a sub-folder of the folder containing the consumer module.
 
-#### Utilities are exported pure (or mostly pure) functions that are not specific to your application's business logic.
+#### Utilities are exported pure (or purish...) functions that are not specific to your application's business logic.
 
 The utilities folder should be a toolbox that you can ideally lift and put in another project with minimal effort.
 
