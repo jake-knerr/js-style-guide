@@ -1953,9 +1953,9 @@ window.addEventListener("click", (event) => {});
 addEventListener("click", (event) => {});
 ```
 
-#### Prefer to name functions _handle_ + name when the function is passed as a callback argument. The entire name should use the standard lowerCamelCase convention.
+#### Prefer to name functions that handle asynchronous behavior with the action verb prefix _handle_.
 
-> Why? This nomenclature makes it clear that the function is a callback function and signals the lazy nature of the callback function.
+> Why? This nomenclature makes the functions lazy nature clear.
 
 ```javascript
 // preferred
@@ -2474,6 +2474,27 @@ function createPerson(name) {
   };
 }
 
+// preferred
+function createPerson(name) {
+  const birthday = "12.8.2022";
+
+  const person = {
+    birthday,
+
+    getAge() {
+      return birthday;
+    },
+  };
+
+  return person;
+}
+```
+
+#### A useful factory pattern is to factory pattern - all code to initialize above return, then return the object. could be useful to set object and then return object to allow for method chaining
+
+> Why?
+
+```javascript
 // preferred
 function createPerson(name) {
   const birthday = "12.8.2022";
