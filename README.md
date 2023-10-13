@@ -437,6 +437,10 @@ export function handleCar() {}
 
 ### Naming Files
 
+#### Filenames are nounal.
+
+> Why? Files are nouns, not verbs.
+
 #### Filenames only use lowercase letters and numbers. The first character of a filename is a letter. Use train-case to separate words.
 
 Use descriptive names.
@@ -2527,37 +2531,19 @@ import { utility } from "./utilities";
 export class Kls {}
 ```
 
-#### A module's filename is a descriptive lowerCamelCase nounal name. Even for modules that only export a single function, the name should be nounal.
+#### Module filenames are not required to rigidly reflect the names of exported identifiers.
 
-> Why? Files are nouns, not verbs.
+Generally, exported identifiers will likely reflect the file's purpose and be reflected in the filename. But, this is not required.
+
+> Why? Naming flexibility is necessary. Also, it is not always possible to reflect the exported identifiers in the filename. For example, a file may export a single default export, but the default export may be a composite object that contains many identifiers.
 
 ```javascript
-// color.js
-export const getColor = () => {};
+export default class createBtnComponent() {}
 ```
 
-#### Prefer to place side-effect causing code that runs when the module is initialized towards the top of the module.
-
-> Why? Since the code will cause a side-effect every time the module is used, it should be obvious to readers.
-
-```javascript
-// discouraged
-import { modifyDOM } from "utils";
-
-function longFunc () {
-  ...
-}
-
-modifyDOM();
-
-// preferred - `modifyDOM` moved towards the top of the module
-import { addStyleRulesToTheDom } from "utils";
-
-modifyDOM();
-
-function longFunc () {
-  ...
-}
+```
+// acceptable
+/client-button.js
 ```
 
 **[⬆ Table of Contents](#toc)**
@@ -2616,15 +2602,15 @@ import { fnA, fnB } from "./fns";
 
 **Place a blank line between each section.**
 
-> Why are non-JavaScript files placed at the bottom? Any styles imported by this module are defined after any styles imported by the other module imports. This makes creating super classes that override base styles easier.
+> Why are non-JavaScript files placed at the bottom? This way imported styles are defined after styles defined by dependencies. This allows composite components to override the styling from composed components.
 
 ```javascript
-// good
+// preferred
 import fs from "fs"; // node.js module
 
 import lib from "library_in_node_modules";
 
-import { D, d, k } from "/src/vendor/google/d"; // local third-party modules
+import { D, d, k } from "google/d"; // local third-party modules
 
 import { F, f, l } from "F"; // local modules
 
@@ -2633,11 +2619,11 @@ import "./styles/a.css"; // non-js files
 
 #### Do not habitually sort imports by alpha.
 
-> Why? It is a lot of effort for very little gained and is a difficult to maintain abstraction.
+> Why? It is a lot of effort for very little gain and is a difficult to maintain abstraction.
 
 #### Do not habitually sort destructured bindings.
 
-> Why? It is a lot of effort for very little gained and is a difficult to maintain abstraction.
+> Why? It is a lot of effort for very little gain and is a difficult to maintain abstraction.
 
 ```javascript
 // discouraged
@@ -2684,6 +2670,8 @@ import Foo, { utils } from "./Foo";
 
 #### Renaming named imports is discouraged.
 
+Only do so to avoid naming collisions.
+
 > Why? Aliasing adds an additional level of indirection.
 
 ```javascript
@@ -2692,20 +2680,10 @@ import { foo as bar } from "./foo";
 
 // preferred
 import { foo } from "./foo";
-```
 
-#### The names of wildcard and default imports derive from converting the imported module's filename into camelCase.
-
-Files names that begin with a capital letter convert to UpperCamelCase, and filenames that begin with a lowercase letter convert to lowerCamelCase.
-
-> Why? This naming system is consistent with export naming rules.
-
-```javascript
-// avoid
-import DefaultFoo from "./Foo";
-
-// good
-import Foo from "./Foo";
+// acceptable - avoid name collision
+import { addEventListener } from "./foo";
+import { addEventListener: addBarEventListener } from "./bar";
 ```
 
 **[⬆ Table of Contents](#toc)**
@@ -2716,14 +2694,14 @@ import Foo from "./Foo";
 
 #### Prefer named exports over default exports.
 
-> Why prefer named exports? This is a tough one: on the one hand, default exports help name the file and encourage smaller modules, which fosters cohesive and orthogonal modules. However, since default exports do not have a default import name, this leads to inconsistencies for the import name across modules. It is simpler to avoid default exports.
+> Why prefer named exports? This is a tough one: on the one hand, default exports encourage smaller modules, which fosters cohesive and orthogonal modules. However, since default exports do not have a default import name, this leads to inconsistencies for the import name across modules. It is simpler to avoid default exports.
 
 ```javascript
-// preferred
-export class Kls {}
-
 // discouraged
 export default class Kls {}
+
+// preferred
+export class Kls {}
 ```
 
 #### Avoid exporting directly from an import in a single statement.
@@ -2774,64 +2752,6 @@ export { A };
 export class Foo {}
 ```
 
-#### Prefer to export classes over named functions when:
-
-- **Multiple instances of an object may be needed.**
-- **The exported module requires async initialization (not initialized when the code is parsed), or initialization requires inputs.**
-- **A series of components share a uniform initialization technique – for example – a component system.**
-
-In other cases, export named functions or objects.
-
-> Why? The class instantiation technique is clear and concise.
-
-```javascript
-// prefer - app will need many instances
-export class Button {}
-
-// prefer - initialization is indeterminate and requires inputs
-export class InternetDown {
-  constructor(reqArg) {}
-}
-
-// prefer - consistency
-export class Button {}
-export class App {}
-export class DropDown {}
-```
-
-#### When exporting multiple strongly-related library functions from a module, prefer to export them as methods of an object.
-
-> Why? This highlights how the functions are related.
-
-```javascript
-// discouraged
-export function getTooltip() {}
-export function setTooltip() {}
-
-// preferred
-export const tooltip = {
-  getTooltip() {},
-  setTooltip() {},
-};
-```
-
-#### When exporting multiple functions from a module that are not strongly-related, prefer to export each function separately rather than as methods of an object.
-
-> Why? Because unused functions can be tree shaken more reliably than unused object properties.
-
-```javascript
-// discouraged
-export const utilities = {
-  addNumbers() {},
-  getColor() {},
-};
-
-// preferred
-export function addNumbers() {}
-
-export function getColor() {}
-```
-
 #### Prefer to export values/functions where they are defined.
 
 > Why? This convention makes the module's interface evident to a reader as they scan the code. Also, it encourages storybook design.
@@ -2846,7 +2766,7 @@ function bar() {}
 
 export { foo, bar };
 
-// preferred
+// preferred - export where defined
 export function foo() {}
 
 const obj = {};
@@ -2859,16 +2779,6 @@ export function bar() {}
 If circular dependencies are necessary, leave an explanatory comment. Use with caution.
 
 > Why? Circular dependencies are simply confusing and increase coupling between modules.
-
-```javascript
-// discouraged
-
-// fileA.js
-import "./b";
-
-// fileB.js
-import "./a";
-```
 
 #### Use constant exports.
 
@@ -2910,7 +2820,7 @@ for (;;) {}
 
 #### If using CJS modules, export inline code using the `exports.*` syntax rather than `module.exports`.
 
-> Why? This is consistent with the the ES modules preference and reduces refactoring time since a change in the name of an exported function does not trigger another change in the `module.exports` props.
+> Why? This is consistent with the the ES modules preference and reduces refactoring time since a change in the name of an exported function does not trigger another change in the `module.exports` object.
 
 ```javascript
 // avoid
@@ -2930,55 +2840,56 @@ exports.exportMe = function () {};
 
 ### Module Concepts
 
-#### When exporting an API and determining whether to export an object factory, object, or functions, follow these guidelines:
+#### When exporting an API and determining whether to export an object factory or standalone data/functions, export an object factory if:
 
-- **Export an object factory if there are (possibly) multiple instances required, initialization data, you need a consistent technique across a series of related components, or extension may be necessary.**
-- **Otherwise, prefer to export functions and manage state directly in the module.**
+1. Multiple instances (possibly) are required.
+1. Initialization data or creation timing is required. Or,
+1. A consistent technique across a series of related components is needed.
 
-#### Re-export helper modules to keep the API clean.
+Otherwise, prefer to export data/functions and manage state directly in the module.
+
+> Why? Module syntax provides great support for inline export of data and functions. Other than the use cases above, there is no need to create an object factory.
+
+```javascript
+// discouraged
+export function createUtils () {
+  return {
+    foo () {},
+    bar () {}
+  }
+}
+
+// preferred
+export foo() {}
+export bar() {}
+```
 
 #### Prefer highly orthogonal modules.
 
 Minimize how changes in one module force changes in other modules. Try to keep modules independent and decoupled.
 
-#### In your project directory structure, prefer to place modules close to the modules that consume them.
+#### Prefer to place side-effect causing code that runs when the module is initialized towards the top of the module.
 
-> Why? This way related modules/files will be close by and easily accessible in the file tree.
+> Why? Since the code will cause a side-effect every time the module is used, it should be obvious to readers.
 
-#### Prefer to co-locate modules by functionality (what they do) rather than their technical category.
-
-In other words, prefer to keep domain-related modules together instead of grouping them by what type of role they satisfy from an architectural perspective.
-
-> Why? This technique makes it easier to determine where to place modules. Sometimes, a module may not cleanly fit into an architectural role, which makes it difficult to determine where to place it (such modules often end up in `/utilities`). By having folders grouped by functionality, it should be easier to locate where modules should be placed.
-
-```
+```javascript
 // discouraged
-/routes/
-  /api.js
-  /products.js
-  /user.js
-/schema/
-  /api.js
-  /products.js
-  /user.js
-/testing
-  /api.js
-  /products.js
-  /user.js
+import { modifyDOM } from "utils";
 
-// preferred
-/api
-  /api-routes.js
-  /api-schema.js
-  /api-tests.js
-/products
-  /products-routes.js
-  /products-schema.js
-  /products-tests.js
-/user
-  /user-routes.js
-  /user-schema.js
-  /user-tests.js
+function longFunc () {
+  ...
+}
+
+modifyDOM();
+
+// preferred - `modifyDOM` moved towards the top of the module
+import { addStyleRulesToTheDom } from "utils";
+
+modifyDOM();
+
+function longFunc () {
+  ...
+}
 ```
 
 **[⬆ Table of Contents](#toc)**
@@ -3021,7 +2932,7 @@ There are legitimate use cases (shims/polyfills) for modifying built-ins, but th
 
 ```javascript
 // avoid
-Array.prototype.sum = function () {};
+Array.prototype.sum = () => {};
 ```
 
 **[⬆ Table of Contents](#toc)**
@@ -3044,9 +2955,57 @@ Helpers are a way to pull out code from a module to make it more readable.
 
 Keep helper modules close to the modules that they are used within. Typically, they are stored inside a sub-folder of the folder containing the consumer module.
 
+#### When a module API grows large, consider re-exporting helper modules to keep the API clean.
+
+> Why?
+
+```javascript
+
+```
+
 #### Utilities are exported pure (or purish...) functions that are not specific to your application's business logic.
 
 The utilities folder should be a toolbox that you can ideally lift and put in another project with minimal effort.
+
+#### In your project directory structure, prefer to place modules close to the modules that consume them.
+
+> Why? This way, related modules/files will be close to one-another and easily accessible in the file tree.
+
+#### Prefer to co-locate modules by functionality (what they do) rather than their technical category.
+
+In other words, prefer to keep domain-related modules together instead of grouping them by what type of role they satisfy from an architectural perspective.
+
+> Why? This technique makes it easier to determine where to place modules. Sometimes, a module may not cleanly fit into an architectural role, which makes it difficult to determine where to place it (such modules often end up in `/utilities`). By having folders grouped by functionality, it should be easier to locate where modules should be placed.
+
+```
+// discouraged
+/routes/
+  /api.js
+  /products.js
+  /user.js
+/schema/
+  /api.js
+  /products.js
+  /user.js
+/testing
+  /api.js
+  /products.js
+  /user.js
+
+// preferred
+/api
+  /api-routes.js
+  /api-schema.js
+  /api-tests.js
+/products
+  /products-routes.js
+  /products-schema.js
+  /products-tests.js
+/user
+  /user-routes.js
+  /user-schema.js
+  /user-tests.js
+```
 
 ### Client-Side
 
