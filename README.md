@@ -48,7 +48,7 @@ Jake Knerr © Ardisia Labs LLC
   - [Arrow Functions](#arrow-functions)
   - [Generator Functions](#generator-functions)
   - [Classes, Constructor Functions](#classes-constructor-functions)
-  - [Class, Constructor Functions, Object Factories Concepts](#class-constructor-functions-object-factories-concepts)
+  - [Object Factories, Class, Constructor Functions, Prototypes](#object-factories-class-constructor-functions-prototypes)
   - [Modules](#modules)
   - [Module Imports](#module-imports)
   - [Module Exports](#module-exports)
@@ -2425,38 +2425,11 @@ function double(value) {
 
 ---
 
-### Class, Constructor Functions, Object Factories Concepts
-
-#### Useful criteria for when to use constructor functions to create objects:
-
-- When they are required.
-  - Examples:
-    - Using the built-in `Error` object.
-    - Creating custom elements.
-- Large numbers of objects are created, and the performance of the object creation is critical.
-  - For these use cases, construction can be optimized by moving methods to the reused prototype.
-- Inheritance is expected by third-party consumers, which makes an idiomatic technique useful.
-
-> Why not use class or prototypes more often? My principle gripe against prototypes is that requiring the `this` keyword makes their use less flexible. I like being able to create objects, destructure methods, and pass the methods around without needing to keep in mind the context of the method. In principle, I really like the idea of prototypes and the consistency of the class syntax. But in practice, I find them to be more cumbersome than they are worth.
-
-```javascript
-// required
-class Popup extends HTMLElement {
-  constructor() {
-    super();
-  }
-}
-customElements.define("popup-info", Popup);
-
-// required
-new Error("Error message here.");
-```
+### Object Factories, Class, Constructor Functions, Prototypes
 
 #### Object factories are preferred to constructor functions for object creation.
 
-Avoid the `this` keyword. Use closures to capture state instead.
-
-> Why? Object factories are more flexible than constructor functions and very easy to use and understand.
+> Why not use class or prototypes? My principle gripe against prototypes is that requiring the `this` keyword makes their use less flexible. I like being able to create objects, destructure methods, and pass the methods around without needing to keep in mind the context of the method. In principle, I really like the idea of prototypes and the consistency of the class syntax. But in practice, I find them to be more cumbersome than they are worth.
 
 ```javascript
 // discouraged
@@ -2472,11 +2445,29 @@ function createPerson(name) {
     name,
   };
 }
+```
 
+#### For object factories, prefer names using the format: "create" + object name.
+
+> Why? This nomenclature clearly states the purpose of the function.
+
+```javascript
+// preferred
+function createPerson() {
+  return { name: "Calvin" };
+}
+```
+
+#### Avoid the `this` keyword.
+
+Use closures to capture state instead.
+
+```javascript
 // discouraged - using `this`
 function createPerson(name) {
   return {
     birthday: "12.8.2022",
+
     getAge() {
       return this.birthday;
     },
@@ -2485,10 +2476,13 @@ function createPerson(name) {
 
 // preferred
 function createPerson(name) {
+  const birthday = "12.8.2022";
+
   const person = {
-    birthday: "12.8.2022",
+    birthday,
+
     getAge() {
-      return person.birthday;
+      return birthday;
     },
   };
 
@@ -2496,7 +2490,52 @@ function createPerson(name) {
 }
 ```
 
-#### Useful criteria for when to use prototypal inheritance over object composition:
+#### Prefer object composition over prototypal inheritance.
+
+> Why? Object composition is more flexible.
+
+```javascript
+// discouraged
+class Dog {}
+
+class Golden extends Dog {}
+
+// preferred
+function createDog() {
+  return {};
+}
+
+function createGolden() {
+  return Object.assign(createDog(), {});
+}
+```
+
+#### Useful criteria for when to use constructor functions:
+
+- When they are required.
+  - _Examples_:
+    - Using the built-in `Error` object.
+    - Creating custom elements.
+- Large numbers of objects are created, and the performance of the object creation is critical.
+  - For these use cases, construction can be optimized by moving methods to the reused prototype.
+- Inheritance is expected by third-party consumers, which makes an idiomatic technique useful.
+
+> Why? Prototypes have narrowly defined use-cases.
+
+```javascript
+// required
+class Popup extends HTMLElement {
+  constructor() {
+    super();
+  }
+}
+customElements.define("popup-info", Popup);
+
+// required
+new Error("Error message here.");
+```
+
+#### Useful criteria for when using prototypal inheritance over object composition may be preferable:
 
 - The entire API of the superclass must be available to consumers of the extended object.
 - The types of arguments stay consistent.
@@ -2504,8 +2543,6 @@ function createPerson(name) {
 - Inheritance is intended to be performed by third parties. Inheritance has the advantage of providing a simple mechanism for other users to conform to your implementation.
 
 Generally, object composition is preferred.
-
-> Why? See the explanation above as to why prototypes are generally discouraged.
 
 **[⬆ Table of Contents](#toc)**
 
