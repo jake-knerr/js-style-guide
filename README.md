@@ -48,7 +48,7 @@ Jake Knerr © Ardisia Labs LLC
   - [Arrow Functions](#arrow-functions)
   - [Generator Functions](#generator-functions)
   - [Classes, Constructor Functions](#classes-constructor-functions)
-  - [Object Creation, Class, Constructor Function Concepts](#object-creation-class-constructor-function-concepts)
+  - [Class, Constructor Functions, Object Factories Concepts](#class-constructor-functions-object-factories-concepts)
   - [Modules](#modules)
   - [Module Imports](#module-imports)
   - [Module Exports](#module-exports)
@@ -764,7 +764,7 @@ This is a key rule that will help guide many decisions as to how to write code.
 > Why? Unnecessary code for documentation can ultimately result in code that is less clear due to there being more code. Also, unnecessary code hurts performance due to larger package sizes.
 
 ```javascript
-// discouraged - getA() is doing nothing but retrieving obj.a
+// discouraged - getA() is doing nothing but documenting obj.a
 const obj = {
   a: 10,
   getA() {
@@ -902,7 +902,7 @@ if (foo === "bar") console.log();
 if (foo === "bar") console.log("bar");
 else console.log("not bar");
 
-// preferred
+// preferred - always use braces for multiple conditions
 if (foo === "bar") {
   console.log("bar");
 } else {
@@ -963,7 +963,7 @@ for (const element of arr) {
 
 Avoid custom error handling.
 
-> Why? The language provides an error-handling technique that is widely understood by developers. Use it.
+> Why? The language provides an error-handling technique that is widely understood by developers. Using custom error handling techniques is unnecessary.
 
 ```javascript
 // avoid
@@ -973,7 +973,7 @@ throw "error";
 throw new Error("error");
 ```
 
-#### Prefer to create errors with a message. The message should be in lowercase only and only use punctuation when necessary for clarity.
+#### Prefer to create errors with a message. The message should use proper grammar.
 
 > Why? The error message helps to quickly understand the error.
 
@@ -981,8 +981,11 @@ throw new Error("error");
 // discouraged
 throw new Error();
 
-// preferred
+// discouraged
 throw new Error("no user input");
+
+// preferred
+throw new Error("No user input.");
 ```
 
 #### Prefer to have non-empty catch blocks.
@@ -1275,11 +1278,11 @@ let foo = "bar";
 
 #### Avoid using `var`.
 
-> Why? `let` can accomplish everything `var` can without hoisting, which confuses some developers. `let` also uses block scope, which is more obvious than functional scoping.
+> Why? `let` can accomplish everything `var` can without hoisting, which can be confusing. `let` also uses block scope, which is more obvious than functional scoping.
 
 #### Use one declaration per variable.
 
-> Why? By decoupling variable declarations, it is easier to add new declarations and to locate variables.
+> Why? By decoupling variable declarations, it is easier to add new declarations and to locate variables. Also, one declaration per variable makes it less tempting to define all variables in one place rather than above where they are needed as dictated by storybook design.
 
 ```javascript
 // avoid
@@ -1322,7 +1325,7 @@ let car;
 > What is deeply immutable? If the value is determined at write-time, it is probably deeply immutable. Conversely, if the value is determined at runtime, or it could change, then it is probably not deeply immutable.
 
 ```javascript
-// avoid
+// avoid - not deeply immutable; could change later
 const FAV_NUMBER = 7;
 const LAST_USER_BIRTHDAY = "8.8.2019";
 const COLOR = "red";
@@ -1347,7 +1350,7 @@ const isValid = true;
 
 #### For references to DOM elements, append a "DOM" to the end of the name.
 
-> Why? Since Javascript is often used alongside the DOM, it is useful to have a quick convention to spot DOM elements in code.
+> Why? It is useful to have a quick convention to spot DOM elements in code.
 
 ```javascript
 // avoid
@@ -1374,7 +1377,7 @@ const divDOM = document.createElement("div");
 
 ```javascript
 const BigCarCompanies = {
-  FORD: "ford",
+  TESLA: "tesla",
   TOYOTA: "toyota",
   VOLKSWAGEN: "volkswagen",
 };
@@ -1423,29 +1426,50 @@ const arr = [
 const arr = [{ foo: 1 }];
 ```
 
-#### Prefer object literals that do not have empty rows.
+#### For pure data POJOs, prefer object literals that do not have empty rows.
 
-> Why? Empty rows make related properties look unrelated.
+> Why? The lack of empty rows makes the object look more like a data structure.
 
 ```javascript
 // discouraged
 const foo = {
-  goo,
-  bar() {},
+  name: "Jake",
 
-  one() {},
-  a: "two",
+  sonOne: "Felix",
 
-  b: "three",
+  sonTwo: "Calvin",
+
+  doggo: "Laika",
 };
 
 // preferred
 const foo = {
-  goo,
-  bar() {},
-  one() {},
-  a: "two",
-  b: "three",
+  name: "Jake",
+  sonOne: "Felix",
+  sonTwo: "Calvin",
+  doggo: "Laika",
+};
+```
+
+#### For objects that have methods, prefer placing empty rows between all properties.
+
+> Why? The empty rows make the object look more like an API.
+
+```javascript
+// discouraged
+const foo = {
+  birthday: "8.8.2019",
+  getAge() {},
+  getHeight() {},
+};
+
+// preferred
+const foo = {
+  birthday: "8.8.2019",
+
+  getAge() {},
+
+  getHeight() {},
 };
 ```
 
@@ -1659,8 +1683,8 @@ const event = { type: "enter" };
 function triggerEnter() {}
 
 // preferred
-const event = { type: "enterpress" };
-function triggerEnterPress() {}
+const event = { type: "enterDown" };
+function triggerEnterDown() {}
 ```
 
 #### Prefer to name event handler functions _handle_ + the event name. The entire name should use the standard lowerCamelCase convention.
@@ -1697,7 +1721,7 @@ dispatchEvent(new Event("loading");
 
 Default to function declarations, but remember that function expressions are still useful.
 
-> Why prefer declarations? The principal argument against declarations is that they hoist. However, hoisting can be viewed as an advantage for functions because it allows depended-upon functions to be written under the dependent code, and this is useful because it facilitates code that reads in a top-down manner (storybook design). Also, function declarations require a name, which eliminates the hard-to-track-down bugs that unnamed function expressions create. Finally, the keyword `function` appearing on the left side of the declaration provides documentation to the reader. When a reader scans the source code, the functions are clear. When one assigns all of one's functions to `const` variables, the source is less self-documenting.
+> Why prefer declarations? The principal argument against declarations is that they hoist. However, hoisting can be viewed as an advantage for functions because it allows depended-upon functions to be written under the dependent code, and this is useful because it facilitates code that reads in a top-down manner (storybook design). Also, function declarations require a name, which eliminates the hard-to-track-down bugs that unnamed function expressions create. Finally, the keyword `function` appearing on the left side of the declaration provides clarity to the reader. When a reader scans the source code, the functions are clear. When one assigns all of one's functions to `const` variables, the source is less self-documenting.
 
 > Named functions are the only reliable way to get robust stack inspection.
 
@@ -1816,17 +1840,17 @@ function foo(a, b, c, d) {}
 function foo({ a, b, c, d }) {}
 ```
 
-#### Place optional parameters after required parameters in the function signature.
+#### Prefer to place optional parameters after required parameters in the function signature.
 
-Do not mix required and optional properties.
+Prefer to not mix required and optional properties.
 
 > Why? These conventions make it clear to readers what parameters are optional and which are not. Placing optional parameters at the end of the function signature is the standard convention most developers know and expect, and by supplying optional parameters with values, it is even more apparent which parameters are optional and which are not.
 
 ```javascript
-// avoid
+// discouraged
 function foo(bar = 10, car, goo) {}
 
-// good
+// preferred
 function foo(goo, bar = 10, car = "") {}
 ```
 
@@ -1930,26 +1954,9 @@ addEventListener("click", (event) => {});
 > Why? This nomenclature makes it clear that the function is a callback function and signals the lazy nature of the callback function.
 
 ```javascript
-// examples
-
+// preferred
 function handleClick(event) {}
 function handleLoad() {}
-```
-
-#### When a callback is passed as an argument to return data to the calling function, prefer to name the callback `next`.
-
-> Why? This convention makes the callback's purpose clear.
-
-```javascript
-// discouraged
-function loadData(cb) {
-  cb(data);
-}
-
-// preferred
-function loadData(next) {
-  next(data);
-}
 ```
 
 #### For functional mixins — functions intended to add behavior to objects — prefer names using the format: "mix" + a verbal description of what the mixin does.
@@ -2131,7 +2138,7 @@ function* genFunction(start = 0, end = 100, step = 1) {
 
 ### Classes, Constructor Functions
 
-#### Use the `class` syntax over other class techniques.
+#### Use the `class` syntax over other class (prototype) techniques.
 
 This includes using `extends` for prototypal inheritance.
 
@@ -2351,36 +2358,42 @@ class Foo {
 }
 ```
 
-**[⬆ Table of Contents](#toc)**
+#### Prefer to define bound methods as properties rather than using `bind` on prototype methods.
 
----
+When creating instance properties that are functions, define them in the functions section of the class definition rather than the properties section.
 
-### Object Creation, Class, Constructor Function Concepts
+> Why? This is a much cleaner syntax.
 
-#### Useful criteria for when to use constructor functions to create objects:
+```javascript
+// discouraged
+class Kls {
+  constructor() {
+    this.setProp = this.setProp.bind(this);
+  }
 
-Almost never. The only times constructor functions are useful is when they are:
+  setProp(value) {}
+}
 
-- Required. For example, when using a library that requires a constructor function or extending built-ins.
-- Huge number of objects are created, and the performance of the object creation is critical. In this case, the constructor function can be optimized by moving methods to the prototype.
-- Inheritance is expected by third-party consumers.
+// preferred
+class Kls {
+  setProp = (value) => {};
+}
 
-> Why?
+// avoid - `setProp` points to a function; should be defined in the methods
+// section that is below the constructor
+class Kls {
+  setProp = (value) => {};
 
-#### Instead, use object factories.
+  constructor() {}
+}
 
-Avoid the `this` keyword.
+// good
+class Kls {
+  constructor() {}
 
-> Why?
-
-#### Useful criteria for when to use prototypal inheritance over object composition:
-
-- The entire API of the superclass must be available to consumers of the extended object.
-- The types of arguments stay consistent.
-  - JSDoc doesn't allow extensions to change argument types without re-declaring them. I hate writing code to accommodate JSDoc.
-- Inheritance is intended to be performed by third parties. Inheritance has the advantage of providing a simple mechanism for other users to conform to your implementation.
-
-Generally, object composition is preferred.
+  setProp = (value) => {};
+}
+```
 
 #### Prefer class methods that use the `this` variable.
 
@@ -2404,41 +2417,91 @@ function double(value) {
 }
 ```
 
-#### Prefer to define bound methods as properties rather than using `bind`.
+**[⬆ Table of Contents](#toc)**
 
-When creating instance properties that are functions, place them in the functions section of the class definition rather than the properties section.
+---
 
-> Why? This is a much cleaner syntax.
+### Class, Constructor Functions, Object Factories Concepts
+
+#### Useful criteria for when to use constructor functions to create objects:
+
+- When they are required.
+  - Examples:
+    - Using the built-in `Error` object.
+    - Creating custom elements.
+- Large numbers of objects are created, and the performance of the object creation is critical.
+  - For these use cases, construction can be optimized by moving methods to the reused prototype.
+- Inheritance is expected by third-party consumers, which makes an idiomatic technique useful.
+
+> Why not use class or prototypes more often? My principle gripe against prototypes is that requiring the `this` keyword makes their use less flexible. I like being able to create objects, destructure methods, and pass the methods around without needing to keep in mind the context of the method. In principle, I really like the idea of prototypes and the consistency of the class syntax. But in practice, I find them to be more cumbersome than they are worth.
+
+```javascript
+// required
+class Popup extends HTMLElement {
+  constructor() {
+    super();
+  }
+}
+customElements.define("popup-info", Popup);
+
+// required
+new Error("Error message here.");
+```
+
+#### Object factories are preferred to constructor functions for object creation.
+
+Avoid the `this` keyword. Use closures to capture state instead.
+
+> Why? Object factories are more flexible than constructor functions and very easy to use and understand.
 
 ```javascript
 // discouraged
-class Kls {
-  constructor() {
-    this.setProp = this.setProp.bind(this);
+class Person {
+  constructor(name) {
+    this.name = name;
   }
-
-  setProp(value) {}
 }
 
 // preferred
-class Kls {
-  setProp = (value) => {};
+function createPerson(name) {
+  return {
+    name,
+  };
 }
 
-// avoid - `setProp` points to a function; should be in the methods section
-class Kls {
-  setProp = (value) => {};
-
-  constructor() {}
+// discouraged - using `this`
+function createPerson(name) {
+  return {
+    birthday: "12.8.2022",
+    getAge() {
+      return this.birthday;
+    },
+  };
 }
 
-// good
-class Kls {
-  constructor() {}
+// preferred
+function createPerson(name) {
+  const person = {
+    birthday: "12.8.2022",
+    getAge() {
+      return person.birthday;
+    },
+  };
 
-  setProp = (value) => {};
+  return person;
 }
 ```
+
+#### Useful criteria for when to use prototypal inheritance over object composition:
+
+- The entire API of the superclass must be available to consumers of the extended object.
+- The types of arguments stay consistent.
+  - Typescript flavored JSDoc doesn't allow extensions to change argument types without re-declaring them. I hate writing code to accommodate JSDoc.
+- Inheritance is intended to be performed by third parties. Inheritance has the advantage of providing a simple mechanism for other users to conform to your implementation.
+
+Generally, object composition is preferred.
+
+> Why? See the explanation above as to why prototypes are generally discouraged.
 
 **[⬆ Table of Contents](#toc)**
 
@@ -2458,7 +2521,7 @@ const utility = require("./utilities.js");
 
 module.exports = class Kls {};
 
-// good
+// preferred
 import { utility } from "./utilities";
 
 export class Kls {}
