@@ -55,13 +55,12 @@ Jake Knerr © Ardisia Labs LLC
   - [CJS Modules](#cjs-modules)
   - [Module Concepts](#module-concepts)
   - [Restricted JavaScript Features](#restricted-javascript-features)
-- [Application Suggestions \& Structure](#application-suggestions--structure)
+- [Application Architecture](#application-architecture)
   - [General](#general)
   - [Client-Side](#client-side)
   - [Node](#node)
 - [Minification](#minification)
 - [Comments and Documentation](#comments-and-documentation)
-  - [Section Dividers](#section-dividers)
   - [Commenting Overview](#commenting-overview)
   - [Implementation Comments](#implementation-comments)
   - [Documentation Comments, JSDoc](#documentation-comments-jsdoc)
@@ -1955,7 +1954,7 @@ addEventListener("click", (event) => {});
 
 #### Prefer to name functions that handle asynchronous behavior with the action verb prefix _handle_.
 
-> Why? This nomenclature makes the functions lazy nature clear.
+> Why? This nomenclature makes the function's lazy nature clear.
 
 ```javascript
 // preferred
@@ -2429,7 +2428,7 @@ function double(value) {
 
 #### Object factories are preferred to constructor functions for object creation.
 
-> Why not use class or prototypes? My principle gripe against prototypes is that requiring the `this` keyword makes their use less flexible. I like being able to create objects, destructure methods, and pass the methods around without needing to keep in mind the context of the method. In principle, I really like the idea of prototypes and the consistency of the class syntax. But in practice, I find them to be more cumbersome than they are worth.
+> Why not use class or prototypes? My principle gripe against prototypes is that requiring the `this` keyword makes their use less flexible. I like being able to destructure methods, and pass the methods around without needing to keep in mind the context of the method. In principle, I really like the idea of prototypes and the consistency of the class syntax. But in practice, I find them to be more cumbersome than they are worth.
 
 ```javascript
 // discouraged
@@ -2537,7 +2536,7 @@ function createGolden() {
   - _Examples_:
     - Using the built-in `Error` object.
     - Creating custom elements.
-- Large numbers of objects are created, and the performance of the object creation is critical.
+- Large numbers of objects are created, and the performance and/or memory consumption of the object creation is critical.
   - For these use cases, construction can be optimized by moving methods to the reused prototype.
 - Inheritance is expected by third-party consumers, which makes an idiomatic technique useful.
 
@@ -2556,7 +2555,7 @@ customElements.define("popup-info", Popup);
 new Error("Error message here.");
 ```
 
-#### Useful criteria for when using prototypal inheritance over object composition may be preferable:
+#### Useful criteria for when prototypal inheritance may be preferable to object composition:
 
 - The entire API of the superclass must be available to consumers of the extended object.
 - The types of arguments stay consistent.
@@ -2909,8 +2908,8 @@ Otherwise, prefer to export data/functions and manage state directly in the modu
 > Why? Module syntax provides great support for inline export of data and functions. Other than the use cases above, there is no need to create an object factory.
 
 ```javascript
-// discouraged
-export function createUtils () {
+// discouraged - pure functions do not need multiple instances
+export function createPureUtilsFunctions () {
   return {
     foo () {},
     bar () {}
@@ -2997,7 +2996,7 @@ Array.prototype.sum = () => {};
 
 ---
 
-## Application Suggestions & Structure
+## Application Architecture
 
 ### General
 
@@ -3005,25 +3004,17 @@ Array.prototype.sum = () => {};
 
 Exported functionality that does not manage an internal state or cause side-effects are simply utilities.
 
-Note, the totality of the exported functions are a singular "service". Each function is not a service, and the module does not export "services". The module exports a "service".
-
-#### Helpers are modules that export functionality that is intended to be used in another module.
-
-Helpers are a way to pull out code from a module to make it more readable.
-
-Keep helper modules close to the modules that they are used within. Typically, they are stored inside a sub-folder of the folder containing the consumer module.
-
-#### When a module API grows large, consider re-exporting helper modules to keep the API clean.
-
-> Why?
-
-```javascript
-
-```
+Note, the totality of the exported functions in a module are a singular "service". Each function is not a service, and the module does not export "services". The module exports a "service".
 
 #### Utilities are exported pure (or purish...) functions that are not specific to your application's business logic.
 
 The utilities folder should be a toolbox that you can ideally lift and put in another project with minimal effort.
+
+#### Helpers are modules that export functionality that is intended to be used in another module. When a module API grows large, consider re-exporting helper modules to keep the API clean.
+
+Helpers are a way to pull out code from a module to make it smaller more readable.
+
+Keep helper modules close to the modules that they are used within. Typically, they are stored inside a sub-folder of the folder containing the consumer module.
 
 #### In your project directory structure, prefer to place modules close to the modules that consume them.
 
@@ -3036,7 +3027,7 @@ In other words, prefer to keep domain-related modules together instead of groupi
 > Why? This technique makes it easier to determine where to place modules. Sometimes, a module may not cleanly fit into an architectural role, which makes it difficult to determine where to place it (such modules often end up in `/utilities`). By having folders grouped by functionality, it should be easier to locate where modules should be placed.
 
 ```
-// discouraged
+#discouraged
 /routes/
   /api.js
   /products.js
@@ -3050,7 +3041,7 @@ In other words, prefer to keep domain-related modules together instead of groupi
   /products.js
   /user.js
 
-// preferred
+#preferred
 /api
   /api-routes.js
   /api-schema.js
@@ -3070,7 +3061,7 @@ In other words, prefer to keep domain-related modules together instead of groupi
 #### Common src folders:
 
 - `src/components`
-- `src/services` - modules that add application functionality for different features of the SPA.
+- `src/services` - modules that add application functionality for different features of the application.
 - `src/utils`
 - `src/types` - shared type definitions, enums, classes, and jsdoc definitions that do not fit cleanly into a feature folder.
 
@@ -3081,6 +3072,7 @@ In other words, prefer to keep domain-related modules together instead of groupi
 Optionally, a `.env` file at the root may be useful to store site secrets.
 
 ```
+#example folders/files
 .env
 /auth
 /cars
@@ -3103,21 +3095,21 @@ server.js
 - `/routes` - Post requests should use CRUD prefixes in the url. E.G. `/create-topic`
 - `/handlers` - Controllers. The only function types that can accept `req`, `res`,and `session` objects.
   - Prefer thin controllers and put business logic in the services.
-    - Controllers should just concern themselves with HTTP and data shape validation.
+    - HTTP request handlers should just concern themselves with HTTP and data shape validation.
   - Responses prefer a JSON response with the following signature: `{ok: boolean, error: string|string[]}`;
   - Exported functions use `handleXXX` as a naming scheme.
-- `/data` - All exported functions use CRUD prefix names like `readData`, `updateData`, etc. Models are "dumb" and use simple CRUD functions. The services are smart.
-  - Models are the gateway to the persistence layer. All SQL/DB code is in model functions.
+- `/data` - All exported functions use CRUD prefix names like `readData`, `updateData`, etc. Data functions are "dumb" and use simple CRUD functions. The services are smart.
+  - Data functions are the gateway to the persistence layer. All SQL/DB code is in these functions.
   - Prefer the following top-down order for exported functions: `read/update/create/delete`.
   - Domain entities are defined in types. E.G. `User`, `Car`, `Customer`.
-- `/services` - Domain level exported functions that are the API that each feature uses to communicate with each-other, and they are the gateway to the model. Services are "smart" and models are "dumb". They provide the API for features to interact with one-another. They also provide the data that the controllers use.
+- `/services` - Domain level exported functions that are the API that each feature uses to communicate with each-other, and they are the gateway to the data model. Services are "smart" and data models are "dumb". They provide the API for features to interact with one-another. They also provide the data that the controllers use.
   - When deciding which service a function belongs to, consider the data. What data is being mutated, created, or read? What service does this data fit into the best?
   - Prefer the following top-down function order: `get/set/add/remove`.
 - `/pages` - Templates and static view files.
 - `/src` - Source files for any transpiled, compiled, or bundled libraries.
-  - Even for multiple discrete libraries, prefer to put them all in a single `/src` folder per feature.
-- `/validators` - All exported functions use `validateXXX` as a naming scheme. They validate and sanitize data in requests.
-  - Validators are middleware used to validate data before it gets to the services.
+  - Even for multiple discrete bundles, prefer to put them all in a single `/src` folder per feature.
+- `/validators` - Validators are middleware used to validate data before it gets to the services.
+  - All exported functions use `validateXXX` as a naming scheme. They validate and sanitize data in requests.
   - They validate the shape of data so typically there are no hits to the database or services.
   - For errors, either throw `400`|`500` for tampering, or errors in an array on the `Request` object for handling by controllers.
 - `/types` - Enums, classes, and jsdoc definitions that are specific to the feature, and can be used by other features.
@@ -3137,52 +3129,21 @@ This indirection is only worthwhile if the minification savings are substantial.
 
 > Why? Object properties can not be reliably minified. Variables defined in the local scope can be minified.
 
+> Private class properties are easily minified.
+
 ```javascript
 // destructuring
 function ({someExampleProp: a}) {}
 
-// assignments
+// assignment
 const a = this.someExample.prop.view.state.a;
 ```
-
-#### Remember that private object properties are easily minified.
 
 **[⬆ Table of Contents](#toc)**
 
 ---
 
 ## Comments and Documentation
-
-### Section Dividers
-
-#### Create comments that are used to delineate code sections (section dividers) in the following way:\*\*
-
-- **The comment is on a single line and does not overflow the line width.**
-- **Starting from the left after the opening characters `/*`, place a single space.**
-- **Place two consecutive hyphens `--`.**
-- **Add another space.**
-- **Next, place the comment's text content. The text content uses title case.**
-- **Add another space.**
-- **Place 10 hyphens `----------`, and add another space before closing the comment with the closing characters `*/`.**
-- **If possible, place blank lines above and below the comment.**
-
-Section divider comments are not encouraged or discouraged. Usage of them is left up to a developer's discretion. This is simply a guide as to how they should be formatted if used.
-
-```javascript
-let obj;
-
-/* -- Utility Functions for the Application ---------- */
-
-function bar() {}
-
-/* -- Classes ---------- */
-
-class Foo {}
-```
-
-**[⬆ Table of Contents](#toc)**
-
----
 
 ### Commenting Overview
 
@@ -3194,11 +3155,11 @@ class Foo {}
 
 ```javascript
 /**
- * This class helps with colors. (doc comment)
+ * This class helps with colors. (documentation)
  */
 class Color {
   getColor(foo /** string (doc comment) */) {
-    // memory leaks can occur here if you are not careful (impl comment)
+    // memory leaks can occur here if you are not careful (implementation)
     let fn = function () {
       /* lorem ipsum (impl comment) */
     };
@@ -3268,7 +3229,7 @@ function testDatabase() {}
 
 #### Place an empty line before a comment unless it's on the first line of a block.
 
-> Why prefer an empty line? Without a blank line, code becomes cramped.
+> Why? Without a blank line, code becomes cramped.
 
 ```javascript
 // avoid
@@ -3572,7 +3533,7 @@ Why? This technique ensures that the description is visible regardless of the wo
  */
 ```
 
-#### Prefer to not use a hyphen before an inline description unless it is required for clarity.
+#### Hyphens before an inline description are discouraged unless it is required for clarity.
 
 > Why? It is more concise to exclude the hyphen and is already clear since IDEs change colors for contrast.
 
@@ -3610,7 +3571,7 @@ Why? This technique ensures that the description is visible regardless of the wo
 export const foo;
 ```
 
-#### Do not worry about sorting types by alpha or any other arbitrary sorting system.
+#### Do not worry about sorting @props by alpha or any other arbitrary sorting system.
 
 > Why? This is a hard to maintain abstraction that provides little benefit.
 
@@ -3699,9 +3660,9 @@ const anotherFoo
  */
 ```
 
-#### Document the interface for a file. For modules, document all exports. Exported functions and data should have full intellisense support.
+#### Document the interface for a file. For modules, document all exports. Exported functions and data should have intellisense support.
 
-This includes types that are indirectly exported. If the code has to change to support intellisense, then change the code.
+This includes types that are indirectly exported.
 
 > Why? This serves the primary purpose of documentation, which is to illustrate how to use the interface.
 
@@ -3737,9 +3698,9 @@ function bar() {}
 
 #### Documenting more than what is necessary is discouraged.
 
-For example, for class exports there is no need to document private properties or methods. Also, if the name of a public method makes its purpose obvious, then there is no need to write a description of the method.
+Also, if the name of an API property/method makes its purpose obvious, then there is no need to write a description.
 
-However, always document parameter types.
+However, always document the parameter types of API properties/methods.
 
 > Why? Dogmatic approaches to documentation are hard to maintain and accomplish little.
 
@@ -3763,7 +3724,9 @@ export class Foo {
 }
 ```
 
-#### Documenting private/non-exported/non-interface code is discouraged. This preference does not include `@type` annotations designed to satisfy a type-checking program.
+#### Documenting private/non-exported/non-interface code is discouraged.
+
+An exception is if one is satisfying a type-checker.
 
 Prefer to make private code self-documenting, and failing that, use implementation comments to provide guidance.
 
@@ -3780,13 +3743,9 @@ class Foo {
 }
 ```
 
-#### If it is unclear what module first references an annotation, then add the annotation to a prominent top-level file in your project.
-
-The root file of the project is a good option.
-
 #### Creating files that contain only JSDoc annotations and no source code is discouraged. Instead, put JSDoc annotations in files with source code.
 
-The only exception is for global types that must be placed in files without source code, imports, or exports.
+The exception is for global types that must be placed in files without source code, imports, or exports.
 
 > Why? Files with JSDoc and no source code are unnecessary and confusing unless one is creating global types.
 
@@ -3840,7 +3799,7 @@ Some criteria for a functional-lite approach:
   - Write small, unary functions that have outputs that can serve as inputs to other functions when possible.
   - Keep function signatures simple to generalize inputs.
 - Prefer the use of pure functions.
-  - Note, a function is considered pure, even if impure techniques are used in the function body, as long as the impure techniques are not observable outside the function.
+  - Note, that a function is pure even if impure techniques are used in the function body as long as the impure techniques are not observable outside the function.
 - Prefer idempotent functions.
 - When triggering side-effects, try to isolate them and make them obvious.
 - Use a point-free style if convenient, but do not get carried away.
