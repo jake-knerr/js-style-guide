@@ -2489,24 +2489,46 @@ function createPerson(name) {
 }
 ```
 
-#### A useful factory pattern is to factory pattern - all code to initialize above return, then return the object. could be useful to set object and then return object to allow for method chaining
+#### A useful factory pattern is declaring all initialization variables and functions towards the top of the creational function, then create an API object with public properties, and then return the API object.
 
-> Why?
+> Why write out initialization variables and functions towards the top? It is easier to read code that is written in a top-down fashion.
+
+> Why return a named API object? By creating the API object by name, public methods can call other public methods and return itself for method chaining. This technique is self-documenting and makes it easy to add new methods to the API.
 
 ```javascript
-// preferred
 function createPerson(name) {
+  // declare all variables and functions for initialization here towards the top
   const birthday = "12.8.2022";
 
-  const person = {
+  let birthdayDateTime = getBirthdayDatetime();
+
+  function getBirthdayDatetime() {
+    return parseDate(birthday);
+  }
+
+  // create api object
+  const api = {
     birthday,
 
+    getBirthdayDatetime,
+
+    // reference api object to access public property
     getAge() {
-      return birthday;
+      return api.birthday;
+    },
+
+    calcGeneration() {
+      // reference api object to call other public method
+      const gen = api.getAge();
+    }
+
+    setAge(age) {
+      // return api to alow method chaining
+      return api;
     },
   };
 
-  return person;
+  return api;
 }
 ```
 
