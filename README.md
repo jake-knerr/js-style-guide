@@ -2930,7 +2930,7 @@ Otherwise, prefer to export data/functions and manage state directly in the modu
 > Why? Module syntax provides great support for inline export of data and functions. Other than the use cases above, there is no need to create an object factory.
 
 ```javascript
-// discouraged - pure functions do not need multiple instances
+// discouraged - pure functions do not need to be wrapped in an object factory
 export function createPureUtilsFunctions () {
   return {
     foo () {},
@@ -3094,7 +3094,7 @@ In other words, prefer to keep domain-related modules together instead of groupi
 Optionally, a `.env` file at the root may be useful to store site secrets.
 
 ```
-#example folders/files
+#example
 .env
 /auth
 /cars
@@ -3115,8 +3115,8 @@ server.js
 #### Each top-level feature/domain folder prefers these sub-folders:
 
 - `/routes` - Post requests should use CRUD prefixes in the url. E.G. `/create-topic`
-- `/handlers` - Controllers. The only function types that can accept `req`, `res`,and `session` objects.
-  - Prefer thin controllers and put business logic in the services.
+- `/handlers` - The only function types that can accept `req`, `res`,and `session` objects.
+  - Prefer thin handlers and put business logic in the services.
     - HTTP request handlers should just concern themselves with HTTP and data shape validation.
   - Responses prefer a JSON response with the following signature: `{ok: boolean, error: string|string[]}`;
   - Exported functions use `handleXXX` as a naming scheme.
@@ -3124,7 +3124,7 @@ server.js
   - Data functions are the gateway to the persistence layer. All SQL/DB code is in these functions.
   - Prefer the following top-down order for exported functions: `read/update/create/delete`.
   - Domain entities are defined in types. E.G. `User`, `Car`, `Customer`.
-- `/services` - Domain level exported functions that are the API that each feature uses to communicate with each-other, and they are the gateway to the data model. Services are "smart" and data models are "dumb". They provide the API for features to interact with one-another. They also provide the data that the controllers use.
+- `/services` - The functions that each feature uses to communicate with each-other, and they are the gateway to the data model. Services are "smart" and data models are "dumb". They also provide the data that the handlers use.
   - When deciding which service a function belongs to, consider the data. What data is being mutated, created, or read? What service does this data fit into the best?
   - Prefer the following top-down function order: `get/set/add/remove`.
 - `/pages` - Templates and static view files.
@@ -3133,7 +3133,7 @@ server.js
 - `/validators` - Validators are middleware used to validate data before it gets to the services.
   - All exported functions use `validateXXX` as a naming scheme. They validate and sanitize data in requests.
   - They validate the shape of data so typically there are no hits to the database or services.
-  - For errors, either throw `400`|`500` for tampering, or errors in an array on the `Request` object for handling by controllers.
+  - For errors, either throw `400`|`500` for tampering, or errors in an array on the `Request` object for handling by handlers.
 - `/types` - Enums, classes, and jsdoc definitions that are specific to the feature, and can be used by other features.
 - `/utils` - Feature specific utilities.
 
