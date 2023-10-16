@@ -2491,9 +2491,7 @@ function createPerson(name) {
 }
 ```
 
-#### A useful factory pattern is declaring all initialization variables and functions towards the top of the creational function, then create an API object with public properties, and then return the API object.
-
-Also, declare private variables and functions towards the top of the creational function.
+#### A useful factory pattern is declaring all variables and functions used in initialization towards the top of the creational function, next declare private variables used in the API,then create an API object with public properties, next declare private functions used by the API, and finally return the API object.
 
 Consider naming the returned api object, `api` to eliminate the need to create a unique name.
 
