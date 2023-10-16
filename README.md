@@ -2430,6 +2430,8 @@ function double(value) {
 
 > Why not use class or prototypes? My principle gripe against prototypes is that requiring the `this` keyword makes their use less flexible. I like being able to destructure methods, and pass the methods around without needing to keep in mind the context of the method. In principle, I really like the idea of prototypes and the consistency of the class syntax. But in practice, I find them to be more cumbersome than they are worth.
 
+> Another advantage of factories is that they minify better than classes or prototypes because they do not use the `this` keyword.
+
 ```javascript
 // discouraged
 class Person {
@@ -2491,6 +2493,10 @@ function createPerson(name) {
 
 #### A useful factory pattern is declaring all initialization variables and functions towards the top of the creational function, then create an API object with public properties, and then return the API object.
 
+Also, declare private variables and functions towards the top of the creational function.
+
+Consider naming the returned api object, `api` to eliminate the need to create a unique name.
+
 > Why write out initialization variables and functions towards the top? It is easier to read code that is written in a top-down fashion.
 
 > Why return a named API object? By creating the API object by name, public methods can call other public methods and return itself for method chaining. This technique is self-documenting and makes it easy to add new methods to the API.
@@ -2529,6 +2535,38 @@ function createPerson(name) {
   };
 
   return api;
+}
+```
+
+#### Move pure or pure-ish functions out of the factory function to increase performance.
+
+> Why? This technique allows the functions to be shared across all instances of the object and only initialized once. Thus, increasing performance of the program.
+
+```javascript
+// discouraged
+function createPerson() {
+  const tip = calcTip(20);
+
+  function calcTip(mealCost) {
+    return mealCost * 0.2;
+  }
+
+  const api = { tip };
+
+  return api;
+}
+
+// encouraged - calcTip is pure function; move out of factory
+function createPerson() {
+  const tip = calcTip(20);
+
+  const api = { tip };
+
+  return api;
+}
+
+function calcTip(mealCost) {
+  return mealCost * 0.2;
 }
 ```
 
@@ -2763,6 +2801,20 @@ import { foo } from "./foo";
 // acceptable - avoid name collision
 import { addEventListener } from "./foo";
 import { addEventListener: addBarEventListener } from "./bar";
+```
+
+#### Instead of importing a module for its side-effects only, prefer to export a single function that performs the side-effect.
+
+> Why? This convention makes it clearer to the reader that the module is affecting the program.
+
+```javascript
+// avoid
+import "./foo";
+
+// good
+import { foo } from "./foo";
+
+foo();
 ```
 
 **[⬆ Table of Contents](#toc)**
