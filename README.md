@@ -403,6 +403,24 @@ class foo {}
 class Foo {}
 ```
 
+#### It is acceptable to name functions without a leading verb if the function is a callback and not called directly.
+
+In this context, the function is a "thing".
+
+> Why? Callbacks using verbal names can sometimes feel awkward.
+
+```javascript
+// avoid - nounal function name is called
+function addListener(listener) {
+  listener();
+}
+
+// acceptable - nounal function name is not called
+function addListener(listener) {
+  listeners.push(listener);
+}
+```
+
 #### Names for methods of an object typically have shorter names than standalone named functions because methods have the object name as context.
 
 Standalone named functions do not get the implicit context from the object name.
@@ -418,20 +436,6 @@ export class Car {
 // standalone function name is longer because it lacks the context provided
 // by the class name
 export function driveCar() {}
-```
-
-#### Exported functions are named like standalone functions.
-
-> Why? Exported functions are standalone functions. An argument could be made that an exported function name should carry the context of the module it is exported from. However, this is not necessary because the module path is already provided by the import statement.
-
-```javascript
-// avoid
-function handleCar() {}
-
-export const handleCarInMyModule = handleCar;
-
-// good
-export function handleCar() {}
 ```
 
 ### Naming Files
@@ -613,9 +617,11 @@ function foo() {
 
 When a function has multiple call sites, place the function definition as close as possible to the first call site.
 
-This rule applies to functions defined on an object literal, class methods, function expressions, and function declarations across a module.
+This concept applies to functions defined on an object literal, class methods, function expressions, and function declarations across a module.
 
 > Why? When using this technique, function calls are typically encountered in the code before the function is defined. Therefore, the reader may be able to determine the purpose of the function from the name alone. This way, if the reader encounters the function definition below they have the option of skipping peering into the implementation; thus saving time and brainpower.<br><br>When this technique is coupled with declaring module exports where they are defined, the module presents itself in an auto-documenting manner.
+
+However, sometimes it may be advisable to define a function farther away from its call site to avoid breaking up a logical block of code. Use your discretion.
 
 ```javascript
 // preferred
@@ -700,17 +706,41 @@ export class Bar {
 function c() {}
 ```
 
+Example - Function declaration moved father away from call site to facilitate the logical flow of initialization code.
+
+```javascript
+initA();
+aToB();
+bToC();
+
+function initA();
+function aToB();
+function bToC();
+```
+
 #### When ordering sets of statements/data, which includes variable declarations, object (including class) methods/properties, values in a destructuring assignment, or any other set of statements/data, prefer to define the order using the following guidelines in descending order of importance:
 
 - **Define dependent members above the members they depend on (if possible).**
 - **Keep related API functions like `addEventListener` and `removeEventListener` close together.**
 - **Place public members above private members.**
+- **Place object properties above object methods.**
 
 > Why? These rules are intended as a catch-all rule to help resolve how to order your code.
 
 > Why push public members towards the top? Public code should be obvious to a reader.
 
 ```javascript
+// preferred - object properties above object methods
+const api {
+  name: "Calvin",
+
+  foo: 1,
+
+  bar: () {}
+
+  drive: () {}
+}
+
 // preferred - place dependent object property above object property depended
 // upon
 const api = {
@@ -1714,6 +1744,20 @@ addEventListener("loading", event => {
 dispatchEvent(new Event("loading");
 ```
 
+#### Prefer object literals for events.
+
+Even if the pertinent return data are primitives.
+
+> Why? It is easier to add new event data in the future, and literals are self-documenting due to the property names.
+
+```javascript
+// discouraged
+dispatch("Data");
+
+// preferred
+dispatch({ data: "Data" });
+```
+
 **[⬆ Table of Contents](#toc)**
 
 ---
@@ -2432,6 +2476,8 @@ function double(value) {
 
 > Another advantage of factories is that they minify better than classes or prototypes because they do not use the `this` keyword.
 
+> One thing I like about `class` is how the entire API is immediately available via `this`.
+
 ```javascript
 // discouraged
 class Person {
@@ -2488,6 +2534,52 @@ function createPerson(name) {
   };
 
   return person;
+}
+```
+
+#### A useful factory pattern is to write the function using storybook design and return a literal defined inline that points to the previously defined members. The returned object should not define anything directly on itself, other than getter/setter functions.
+
+Also, prefer to push initialization code towards the top of the creational function.
+
+Use JSDoc comments on the public members to make it clear what the object will be exposing.
+
+> Why? This technique is self-documenting and makes it easy to add new methods to the API.
+
+```javascript
+// discouraged
+function createPerson(name) {
+
+  // avoid - do not return a previously defined object
+  const person = {
+    // avoid - do not define properties directly on the returned object
+    birthday: "12.8.2022";
+
+
+    calcWeight() {},
+  };
+
+  return person;
+}
+
+// preferred
+function createPerson(name) {
+  /**
+   * The birthday of the person.
+   */
+  const birthday = "12.8.2022";
+
+
+  /**
+   * Calculates the weight of the person.
+   */
+  function calcWeight() {}
+
+  // good - return a literal defined inline that points to the previously defined members
+  return {
+    birthday,
+
+    calcWeight,
+  };
 }
 ```
 
@@ -2833,52 +2925,15 @@ export default class Kls {}
 export class Kls {}
 ```
 
-#### Avoid exporting directly from an import in a single statement.
+#### Re-exporting from other modules is acceptable.
 
-> Why? One line re-exports break the convention on where imports and exports are located in a module. Consistency is more important than conciseness.
+Prefer to place them at the top of the module below the imports.
 
-```javascript
-// avoid
-import A from "A";
-export { specificName } from "./other";
-import B from "B";
-
-// avoid
-import A from "A";
-import B from "B";
-
-export { specificName } from "./other";
-
-// good - a statement for the import and the export
-import A from "A";
-import B from "B";
-import { specificName } from "./other";
-
-export { specificName };
-```
-
-#### Place re-exported imports immediately below all of the other import statements.
-
-> Why? This convention keeps re-exports as close to their corresponding import statement as possible.
+> Why? Satisfying conciseness.
 
 ```javascript
-// avoid
-import A from "A";
-import B from "B";
-import C from "C";
-
-export class Foo {}
-
-export { A };
-
-// good - re-export immediately follows imports
-import A from "A";
-import B from "B";
-import C from "C";
-
-export { A };
-
-export class Foo {}
+// acceptable
+export { A } from "./A";
 ```
 
 #### Prefer to export values/functions where they are defined.
@@ -2941,6 +2996,36 @@ export { foo };
 for (;;) {}
 ```
 
+#### Prefer exported identifier names that are specific enough to not easily collide with other module APIs.
+
+Avoid overly general names.
+
+> Why? Exported names will be used in other modules. Thus, a general or common name will likely collide with other modules. Instead of requiring exports to be aliased when imported, use a more specific name.
+
+> Exported names lose the surrounding context provided in its module. The exported name should carry the context of the module it is exported from. However, add context in a minimal way.
+
+```javascript
+// discouraged - too general
+export function set() {}
+
+export function addListener() {}
+
+// preferred
+export function setStore() {}
+
+export function addResizeListener() {}
+
+// discouraged - too specific
+export function addWholeNumbersTogether() {}
+
+export function addCallbackToResizeListener() {}
+
+// preferred
+export function addNumbers() {}
+
+export function addResizeListener() {}
+```
+
 **[⬆ Table of Contents](#toc)**
 
 ---
@@ -2972,7 +3057,7 @@ exports.exportMe = function () {};
 #### When exporting an API and determining whether to export an object factory or standalone data/functions, export an object factory if:
 
 1. Multiple instances (possibly) are required.
-1. Initialization data or creation timing is required. Or,
+1. Initialization data or creation timing is required and an API is returned. Or,
 1. A consistent technique across a series of related components is needed.
 
 Otherwise, prefer to export data/functions and manage state directly in the module.
@@ -2991,6 +3076,15 @@ export function createPureUtilsFunctions () {
 // preferred
 export foo() {}
 export bar() {}
+```
+
+#### For modules that do not export an API, but still require initialization, prefer to export a single function that performs the initialization named "initialize".
+
+The initialization function should be idempotent.
+
+```javascript
+// good
+export function initialize(config) {}
 ```
 
 #### Prefer highly orthogonal modules.
@@ -3084,7 +3178,7 @@ The utilities folder should be a toolbox that you can ideally lift and put in an
 
 #### Helpers are modules that export functionality that is intended to be used in another module. When a module API grows large, consider re-exporting helper modules to keep the API clean.
 
-Helpers are a way to pull out code from a module to make it smaller more readable.
+Helpers are a way to pull out code from a module to make it smaller more readable. They are created with a clear idea of where they will be used
 
 Keep helper modules close to the modules that they are used within. Typically, they are stored inside a sub-folder of the folder containing the consumer module.
 
@@ -3820,6 +3914,26 @@ class Foo {
 The exception is for global types that must be placed in files without source code, imports, or exports.
 
 > Why? Files with JSDoc and no source code are unnecessary and confusing unless one is creating global types.
+
+#### For global types that are in files without source code, prefer to the name them "global-types.(js|ts)".
+
+> Why? This convention makes it clear that the file contains global types.
+
+#### When creating types, leave the word "type" off the name.
+
+> Why? Prefer names that describe what something does rather than what it is. Also, the fact that it is a type is already clear from the `@typedef` annotation.
+
+```javascript
+// discouraged
+/**
+ * @typedef {Object} FooType
+ */
+
+// preferred
+/**
+ * @typedef {Object} Foo
+ */
+```
 
 #### Prefer to place JSDoc annotations directly above where they are first referenced.
 
