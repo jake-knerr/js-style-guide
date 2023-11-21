@@ -3033,9 +3033,9 @@ export foo() {}
 export bar() {}
 ```
 
-#### For modules that do not export an API, but still require initialization, prefer to export a single function that performs the initialization named "initialize".
+#### For modules that require initialization and do not export an API, prefer to export a single function that performs the initialization named "initialize".
 
-The initialization function should be idempotent.
+The initialization function can accept configuration values and it should be idempotent.
 
 ```javascript
 // good
