@@ -2541,7 +2541,7 @@ function createPerson(name) {
 
 Also, prefer to push initialization code towards the top of the creational function.
 
-Use JSDoc comments on the public members to make it clear what the object will be exposing.
+Use JSDoc comments on the public members to make it clear what the returned object will be exposing.
 
 > Why? This technique is self-documenting and makes it easy to add new methods to the API.
 
@@ -2580,51 +2580,6 @@ function createPerson(name) {
 
     calcWeight,
   };
-}
-```
-
-#### A useful factory pattern is declaring all variables and functions used in initialization towards the top of the creational function, next declare private variables used in the API,then create an API object with public properties, next declare private functions used by the API, and finally return the API object.
-
-Consider naming the returned api object, `api` to eliminate the need to create a unique name.
-
-> Why write out initialization variables and functions towards the top? It is easier to read code that is written in a top-down fashion.
-
-> Why return a named API object? By creating the API object by name, public methods can call other public methods and return itself for method chaining. This technique is self-documenting and makes it easy to add new methods to the API.
-
-```javascript
-function createPerson(name) {
-  // declare all variables and functions for initialization here towards the top
-  const birthday = "12.8.2022";
-
-  let birthdayDateTime = getBirthdayDatetime();
-
-  function getBirthdayDatetime() {
-    return parseDate(birthday);
-  }
-
-  // create api object
-  const api = {
-    birthday,
-
-    getBirthdayDatetime,
-
-    // reference api object to access public property
-    getAge() {
-      return api.birthday;
-    },
-
-    calcGeneration() {
-      // reference api object to call other public method
-      const gen = api.getAge();
-    }
-
-    setAge(age) {
-      // return api to alow method chaining
-      return api;
-    },
-  };
-
-  return api;
 }
 ```
 
@@ -3000,9 +2955,9 @@ for (;;) {}
 
 Avoid overly general names.
 
-> Why? Exported names will be used in other modules. Thus, a general or common name will likely collide with other modules. Instead of requiring exports to be aliased when imported, use a more specific name.
+> Why? Exported names will be used in other modules as destructured imports. Thus, a very general or very common name will likely collide with other modules. Instead of requiring imports to be aliased, use a more specific name.
 
-> Exported names lose the surrounding context provided in its module. The exported name should carry the context of the module it is exported from. However, add context in a minimal way.
+> Imported names lose the surrounding context provided in their definitional module. The imported name should carry the context of the module it is exported from. However, add context in a minimal way to avoid obvious collisions. Do not make the name so specific that it is cumbersome.
 
 ```javascript
 // discouraged - too general
