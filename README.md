@@ -333,7 +333,7 @@ If you have more than two contexts in the name, consider if the remaining contex
 
 #### Do not include a context in a name that is implicit from the surrounding code.
 
-In other words, the context that surrounds a name can be viewed as part of the name; thus, repeating it is unnecessary.
+In other words, the context that surrounds a name can be viewed as part of the name; thus, repeating it is often unnecessary.
 
 > Note, even the file system can provide implicit context.
 
@@ -438,6 +438,27 @@ export class Car {
 export function driveCar() {}
 ```
 
+#### For exported identifiers, the name should include enough context to reduce risk of collision and provide clarity.
+
+> Why? Since the file that imports the identifier loses the contethe importing user loses the context,. Now, if you export an object, that provides the context.
+
+```javascript
+// example 1
+file: controllers.js
+export function utils () {}
+
+import {utils}
+
+utils.. risk of collision high
+
+prefer export function controllerUtils() {}
+
+// example 2
+export controllerUtils = {
+  add: function () {} // fine because the object is exported
+}
+```
+
 ### Naming Files
 
 #### Filenames are nounal.
@@ -498,29 +519,6 @@ A reader should not have to open the file to determine its purpose.
   server-auth.js
 ```
 
-#### It may be helpful to reference the parent folder names when naming a file.
-
-Appending or prepending parent folder names to a filename can help create a purposeful and unambiguous name. Don't blindly add parent folders; only do so when they are necessary to make the file's purpose clear or avoid ambiguity.
-
-When adding parent folder names, be flexible. It is fine to change plural names to singular names and vice-versa.
-
-> Should I prepend or append parent folder names? Do whatever feels more natural. Prepending is more consistent with the folder hierarchy but may feel dissonant.
-
-```
-/* avoid - handlers is unclear */
-/errors
-  /validation
-    handlers.js
-
-/*
-  good - adding parent folders names make the files purpose clear from the name
-  alone and prevents ambiguity
-*/
-/errors
-  /validation
-    validation-error-handlers.js OR handlers-validation-errors.js
-```
-
 #### A file's extension is a part of the filename and may provide additional context.
 
 For example, a `*.js` file tells the reader the file is a JavaScript file, and adding "js" to the name is unnecessary. `*.js` already carries the context of a "js" file.
@@ -533,11 +531,26 @@ profile-page-template.ejs
 profile-page.ejs
 ```
 
-#### Don't overthink file naming.
+#### Steps to name a file:
 
-Remember that the goal is simple: give files names that make the file's purpose clear and resolve ambiguity without being longer than necessary.
+Start by writing all of the file's parent folder names, separated by train-case. Then append a short as possible name (if necessary) that makes the file's purpose clear from the name alone and minimizes collision risk. Now, examine the folders in the file name: drop all the folders' names where the file's identity is still clear without it and there is no risk of collisions with other files.
 
-Be flexible. A rigid naming abstraction will always fail.
+Sometimes, this system may cause outer folders to be removed, sometimes the inner folders. Files in the same folder tend to have the same folder-prefix. This makes scanning the files easy.
+
+> Note, changing plural folder names to singular names and vice-versa is fine. For example, `/controllers` to `/controller-utils.js` is fine.
+
+> Note, the risk of name collision involves many factors. Perhaps the files with the same name operate in totally different domains and I would be very unusual for me to be working on both at the same time. In such a case, having the same name is not a problem.
+
+```
+/controllers
+  /controllers-subject.js # prefix required
+  /controllers-utils.js # prefix required
+  /subject/
+    /controllers-subject-utils # prefixes required
+
+/icons
+  /thumbs-up.svg # prefix not required, icons-thumbs-up.svg not necessary
+```
 
 ### Naming Folders
 
@@ -944,6 +957,8 @@ if (foo === "bar") {
 ```
 
 #### Prefer `switch` statements to `if` and `else` statements when you have four or more conditions.
+
+Leave a blank line between each `case` statement, but do not have a blank line above the `break` statement.
 
 ```javascript
 // discouraged
@@ -2470,28 +2485,56 @@ function double(value) {
 
 ### Object Factories, Class, Constructor Functions, Prototypes
 
-#### Object factories are preferred to constructor functions for object creation.
+#### Constructor functions are preferred over object factories for object creation.
 
-> Why not use class or prototypes? My principle gripe against prototypes is that requiring the `this` keyword makes their use less flexible. I like being able to destructure methods, and pass the methods around without needing to keep in mind the context of the method. In principle, I really like the idea of prototypes and the consistency of the class syntax. But in practice, I find them to be more cumbersome than they are worth.
+This was a challenging rule to create because good arguments can be made for either choice.
 
-> Another advantage of factories is that they minify better than classes or prototypes because they do not use the `this` keyword.
+However, on the balance of considerations, constructor functions are preferred:
 
-> One thing I like about `class` is how the entire API is immediately available via `this`.
+- They are idiomatic, which means that they work better in IDEs and other developers understand them better.
+- Many native objects require using them to override. See `Error` or the Web Components standard.
+- Having `this` available in the constructor function is useful to pass around to other functions.
+- `this` makes the object's entire API immediately available for use.
+- JSDoc in Typescript does NOT pickup the type implicitly returned by a factory function.
+- Constructor functions are generally faster to create.
+
+As much as I like how factory functions can be more easily destructured and there is no dealing with `this`, the above reasons are compelling.
 
 ```javascript
-// discouraged
-class Person {
-  constructor(name) {
-    this.name = name;
+class Kls {
+  constructor () {
+      // this is convenient to pass the new object
+      new Jingle(this);
+    }
+    x() {}
+    y() {}
+    z() {}
   }
 }
 
-// preferred
-function createPerson(name) {
-  return {
-    name,
-  };
+function createKls () {
+  // creating an exports object is unnecessary for constructor functions
+  const exports = {}
+
+  exports.x = function x () {}
+
+  createJingle(exports);
+
+  return exports.
 }
+```
+
+```javascript
+// requires constructor function
+class Popup extends HTMLElement {
+  constructor() {
+    super();
+  }
+}
+customElements.define("popup-info", Popup);
+
+// requires constructor function
+new Error("Error message here.");
 ```
 
 #### For object factories, prefer names using the format: "create" + object name.
@@ -2502,84 +2545,6 @@ function createPerson(name) {
 // preferred
 function createPerson() {
   return { name: "Calvin" };
-}
-```
-
-#### Avoid the `this` keyword.
-
-Use closures to capture state instead.
-
-```javascript
-// discouraged - using `this`
-function createPerson(name) {
-  return {
-    birthday: "12.8.2022",
-
-    getAge() {
-      return this.birthday;
-    },
-  };
-}
-
-// preferred
-function createPerson(name) {
-  const birthday = "12.8.2022";
-
-  const person = {
-    birthday,
-
-    getAge() {
-      return birthday;
-    },
-  };
-
-  return person;
-}
-```
-
-#### A useful factory pattern is to write the function using storybook design and return a literal defined inline that points to the previously defined members. The returned object should not define anything directly on itself, other than getter/setter functions.
-
-Also, prefer to push initialization code towards the top of the creational function.
-
-Use JSDoc comments on the public members to make it clear what the returned object will be exposing.
-
-> Why? This technique is self-documenting and makes it easy to add new methods to the API.
-
-```javascript
-// discouraged
-function createPerson(name) {
-
-  // avoid - do not return a previously defined object
-  const person = {
-    // avoid - do not define properties directly on the returned object
-    birthday: "12.8.2022";
-
-
-    calcWeight() {},
-  };
-
-  return person;
-}
-
-// preferred
-function createPerson(name) {
-  /**
-   * The birthday of the person.
-   */
-  const birthday = "12.8.2022";
-
-
-  /**
-   * Calculates the weight of the person.
-   */
-  function calcWeight() {}
-
-  // good - return a literal defined inline that points to the previously defined members
-  return {
-    birthday,
-
-    calcWeight,
-  };
 }
 ```
 
@@ -2633,31 +2598,6 @@ function createDog() {
 function createGolden() {
   return Object.assign(createDog(), {});
 }
-```
-
-#### Useful criteria for when to use constructor functions:
-
-- When they are required.
-  - _Examples_:
-    - Using the built-in `Error` object.
-    - Creating custom elements.
-- Large numbers of objects are created, and the performance and/or memory consumption of the object creation is critical.
-  - For these use cases, construction can be optimized by moving methods to the reused prototype.
-- Inheritance is expected by third-party consumers, which makes an idiomatic technique useful.
-
-> Why? Prototypes have narrowly defined use-cases.
-
-```javascript
-// required
-class Popup extends HTMLElement {
-  constructor() {
-    super();
-  }
-}
-customElements.define("popup-info", Popup);
-
-// required
-new Error("Error message here.");
 ```
 
 #### Useful criteria for when prototypal inheritance may be preferable to object composition:
@@ -2756,18 +2696,20 @@ import { fnA, fnB } from "./fns";
 
 #### Prefer to order imports in the following way:
 
+1. **Non-JavaScript files.**
 1. **Built-in (native) modules.**
 1. **Modules in node_modules.**
 1. **Local library modules.**
 1. **Local modules.**
-1. **Non-JavaScript files.**
 
 **Place a blank line between each section.**
 
-> Why are non-JavaScript files placed at the bottom? This way imported styles are defined after styles defined by dependencies. This allows composite components to override the styling from composed components.
+> Why are non-JavaScript files placed at the top? This highlights their distinctiveness, and makes IDE handling easier. However, sometimes imported styles may need to be imported later for styling overrides to work properly.
 
 ```javascript
 // preferred
+import "./styles/a.css"; // non-js files
+
 import fs from "fs"; // node.js module
 
 import lib from "library_in_node_modules";
@@ -2775,8 +2717,6 @@ import lib from "library_in_node_modules";
 import { D, d, k } from "google/d"; // local third-party modules
 
 import { F, f, l } from "F"; // local modules
-
-import "./styles/a.css"; // non-js files
 ```
 
 #### Do not habitually sort imports by alpha.
@@ -2880,14 +2820,14 @@ export default class Kls {}
 export class Kls {}
 ```
 
-#### Re-exporting from other modules is acceptable.
+#### Re-exporting from other modules is discouraged.
 
 Prefer to place them at the top of the module below the imports.
 
-> Why? Satisfying conciseness.
+> Why are they discouraged? In general, re-exports create indirection and redundancy.
 
 ```javascript
-// acceptable
+// discouraged
 export { A } from "./A";
 ```
 
@@ -3009,7 +2949,7 @@ exports.exportMe = function () {};
 
 ### Module Concepts
 
-#### When exporting an API and determining whether to export an object factory or standalone data/functions, export an object factory if:
+#### When exporting an API and determining whether to export an constructor function/object factory or standalone data/functions, export an constructor function/object factory if:
 
 1. Multiple instances (possibly) are required.
 1. Initialization data or creation timing is required and an API is returned. Or,
@@ -3033,7 +2973,7 @@ export foo() {}
 export bar() {}
 ```
 
-#### For modules that require initialization and do not export an API, prefer to export a single function that performs the initialization named "initialize".
+#### For modules that require initialization and do not export an API or return anything, prefer to export a single function that performs the initialization named "initialize".
 
 The initialization function can accept configuration values and it should be idempotent.
 
@@ -3131,38 +3071,26 @@ Note, the totality of the exported functions in a module are a singular "service
 
 The utilities folder should be a toolbox that you can ideally lift and put in another project with minimal effort.
 
-#### Helpers are modules that export functionality that is intended to be used in another module. When a module API grows large, consider re-exporting helper modules to keep the API clean.
+#### Helpers are modules that export functionality that is intended to be used in another module.
 
 Helpers are a way to pull out code from a module to make it smaller more readable. They are created with a clear idea of where they will be used
 
 Keep helper modules close to the modules that they are used within. Typically, they are stored inside a sub-folder of the folder containing the consumer module.
 
+They do not need to have the `helper` suffix in their name.
+
 #### In your project directory structure, prefer to place modules close to the modules that consume them.
 
 > Why? This way, related modules/files will be close to one-another and easily accessible in the file tree.
 
-#### Prefer to co-locate modules by functionality (what they do) rather than their technical category.
+#### Prefer to co-locate modules by technical category rather than functionality (what they do).
 
-In other words, prefer to keep domain-related modules together instead of grouping them by what type of role they satisfy from an architectural perspective.
+In other words, prefer to keep files together based on what type of architectural role they satisfy.
 
-> Why? This technique makes it easier to determine where to place modules. Sometimes, a module may not cleanly fit into an architectural role, which makes it difficult to determine where to place it (such modules often end up in `/utilities`). By having folders grouped by functionality, it should be easier to locate where modules should be placed.
+> Why? Putting domain-related files together results in too many folders, and I think in terms of technical categories.
 
 ```
 #discouraged
-/routes/
-  /api.js
-  /products.js
-  /user.js
-/schema/
-  /api.js
-  /products.js
-  /user.js
-/testing
-  /api.js
-  /products.js
-  /user.js
-
-#preferred
 /api
   /api-routes.js
   /api-schema.js
@@ -3175,6 +3103,20 @@ In other words, prefer to keep domain-related modules together instead of groupi
   /user-routes.js
   /user-schema.js
   /user-tests.js
+
+#preferred
+/routes/
+  /routes-api.js
+  /routes-products.js
+  /routes-user.js
+/schema/
+  /schema-api.js
+  /schema-products.js
+  /schema-user.js
+/testing
+  /testing-api.js
+  /testing-products.js
+  /testing-user.js
 ```
 
 ### Client-Side
@@ -3188,53 +3130,54 @@ In other words, prefer to keep domain-related modules together instead of groupi
 
 ### Node
 
-#### Divide up apps into feature/domain folders with a file in the root directory named `server` that bootstraps the server.
+#### Divide up apps into folders with a file in the root directory named `server` that bootstraps the server.
 
 Optionally, a `.env` file at the root may be useful to store site secrets.
 
 ```
 #example
+/services
 .env
-/auth
-/cars
-/client
-/customers
 server.js
 ```
 
 #### Common top-level folders:
 
 - `/client` - the client application.
-- `/web` - public website(s).
+- `/public` - static assets.
 - `/types` - shared type definitions, enums, classes, and jsdoc definitions that do not fit cleanly into a feature folder.
 - `/utils` - shared utils.
-- `/validators` - shared validators.
-- `/public` - static files accessible by name.
-
-#### Each top-level feature/domain folder prefers these sub-folders:
-
-- `/routes` - Post requests should use CRUD prefixes in the url. E.G. `/create-topic`
-- `/handlers` - The only function types that can accept `req`, `res`,and `session` objects.
+- `/controllers` - The only function types that can accept `req`, `res`,and `session` objects.
   - Prefer thin handlers and put business logic in the services.
     - HTTP request handlers should just concern themselves with HTTP and data shape validation.
   - Responses prefer a JSON response with the following signature: `{ok: boolean, error: string|string[]}`;
   - Exported functions use `handleXXX` as a naming scheme.
+  - `/controllers//validators` - Validators are middleware used to validate data before it gets to the services.
+    - All exported functions use `validateXXX` as a naming scheme. They validate and sanitize data in requests.
+    - They validate the shape of data so typically there are no hits to the database or services.
+    - For errors, either throw `400`|`500` for tampering, or errors in an array on the `Request` object for handling by handlers.
+- `/routes` - Post requests should use CRUD prefixes in the url. E.G. `/create-topic`
+  - Order routes by `read`, `create`, `update`, `delete`.
 - `/data` - All exported functions use CRUD prefix names like `readData`, `updateData`, etc. Data functions are "dumb" and use simple CRUD functions. The services are smart.
   - Data functions are the gateway to the persistence layer. All SQL/DB code is in these functions.
-  - Prefer the following top-down order for exported functions: `read/update/create/delete`.
-  - Domain entities are defined in types. E.G. `User`, `Car`, `Customer`.
+  - Prefer the following top-down order for exported functions: `read//create/update/delete`.
+  - Data entities are defined in types. E.G. `UserEntity`, `Car`, `Customer`.
+    - Add `Entity` to the end of the type name.
 - `/services` - The functions that each feature uses to communicate with each-other, and they are the gateway to the data model. Services are "smart" and data models are "dumb". They also provide the data that the handlers use.
   - When deciding which service a function belongs to, consider the data. What data is being mutated, created, or read? What service does this data fit into the best?
-  - Prefer the following top-down function order: `get/set/add/remove`.
-- `/pages` - Templates and static view files.
+  - Prefer the following top-down function order: `get/add/set/remove`.
+- `/controllers` - shared validators.
+- `/views` - Templates and static view files.
 - `/src` - Source files for any transpiled, compiled, or bundled libraries.
   - Even for multiple discrete bundles, prefer to put them all in a single `/src` folder per feature.
-- `/validators` - Validators are middleware used to validate data before it gets to the services.
-  - All exported functions use `validateXXX` as a naming scheme. They validate and sanitize data in requests.
-  - They validate the shape of data so typically there are no hits to the database or services.
-  - For errors, either throw `400`|`500` for tampering, or errors in an array on the `Request` object for handling by handlers.
-- `/types` - Enums, classes, and jsdoc definitions that are specific to the feature, and can be used by other features.
-- `/utils` - Feature specific utilities.
+
+#### Layer Based Architecture:
+
+Server -> routes -> controllers -> service -> model -> data
+
+A lower layer does not call a higher layer.
+
+> Why can't a lower layer call a higher layer? This creates circular dependencies.
 
 **[⬆ Table of Contents](#toc)**
 
@@ -3606,35 +3549,35 @@ Why? This technique ensures that the description is visible regardless of the wo
  */
 ```
 
-#### Spaces around the union character "|" are discouraged.
+#### Spaces around the union character "|" are preferred.
 
-> Why? Improved conciseness.
+> Why? Improved clarity.
 
 ```javascript
 // discouraged
-/**
- * @param {string | boolean} SpecialType
- */
-
-// preferred
 /**
  * @param {string|boolean} SpecialType
  */
+
+// preferred
+/**
+ * @param {string | boolean} SpecialType
+ */
 ```
 
-#### Spaces around the equal sign "=" in default values are discouraged.
+#### Spaces around the equal sign "=" in default values are preferred.
 
 > Why? Improved conciseness.
 
 ```javascript
 // discouraged
 /**
- * @prop {string} [prop = "a"]
+ * @prop {string} [prop="a"]
  */
 
 // preferred
 /**
- * @prop {string} [prop="a"]
+ * @prop {string} [prop = "a"]
  */
 ```
 
@@ -3751,6 +3694,8 @@ const anotherFoo
 // preferred
 /** @type {any} */
 ```
+
+#### Put global types in a global types file.
 
 **[⬆ Table of Contents](#toc)**
 
