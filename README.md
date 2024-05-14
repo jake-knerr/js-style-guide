@@ -57,7 +57,6 @@ Jake Knerr © Ardisia Labs LLC
   - [Restricted JavaScript Features](#restricted-javascript-features)
 - [Application Architecture](#application-architecture)
   - [General](#general)
-  - [Client-Side](#client-side)
   - [Server, Node](#server-node)
 - [Minification](#minification)
 - [Comments and Documentation](#comments-and-documentation)
@@ -539,13 +538,15 @@ profile-page.ejs
 
 #### Preferred steps to name a file:
 
-Start by writing all of the file's parent folder names. Then, append a short as possible name (if necessary) that makes the file's purpose clear from the name alone and minimizes collision risk. Now, examine the folders in the file name: drop all the folders' names where the file's identity is still clear without it and there is a low risk of collisions.
+- **(1) Start by writing all of the file's parent folder names.**
+- **(2) Append a short as possible name (if necessary) that makes the file's purpose clear from the name alone and minimizes collision risk.**
+- **(3) Examine the folders in the file name: drop all the folders' names where the file's identity is still clear without it and there is a low risk of collisions.**
 
 Sometimes, this system may cause outer folders to be removed, sometimes the inner folders. Files in the same folder tend to have the same folder-prefix. This makes scanning the files easy.
 
 > Note, changing plural folder names to singular names and vice-versa is fine. For example, `/controllers` to `/controller-utils.js` is fine. Do whatever makes sense.
 
-> Note, the risk of name collision involves many factors. Perhaps the files with the same name operate in totally different domains and it would be very unusual for one to be working on both at the same time. In such a case, having the same name is not a problem.
+> Note, the risk of name collision involves many factors. Perhaps two files with the same name operate in totally different domains and it would be very unusual for one to be working on both at the same time. In such a case, having the same name is not a problem.
 
 ```
 /controllers
@@ -3125,15 +3126,6 @@ In other words, prefer to keep files together based on what type of architectura
   /testing-user.js
 ```
 
-### Client-Side
-
-#### Common src folders:
-
-- `src/components`
-- `src/services` - modules that add application functionality for different features of the application.
-- `src/utils`
-- `src/types` - shared type definitions, enums, classes, and jsdoc definitions that do not fit cleanly into a feature folder.
-
 ### Server, Node
 
 #### Divide up apps into folders with a file in the root directory named `server` that bootstraps the server.
@@ -3150,31 +3142,35 @@ server.js
 #### Common top-level folders:
 
 - `/client` - the client application.
+  - `src/components`
+  - `src/services` - Modules that add application functionality for different features of the application.
+  - `src/utils`
+  - `src/types`
 - `/public` - static assets.
 - `/types` - shared type definitions, enums, classes, and jsdoc definitions that do not fit cleanly into a feature folder.
 - `/utils` - shared utils.
-- `/controllers` - Functions that can accept `req`, `res`,and `session` objects.
+- `/controllers` - Functions that can accept `req`, `res`,and `next` objects.
   - Prefer thin controllers and put business logic in the services.
   - HTTP request handlers should just concern themselves with HTTP and data shape validation.
   - Responses prefer a JSON response with the following signature: `{ok: boolean, error: string|string[]}`;
   - Exported functions use `handleXXX` as a naming scheme.
-  - `/controllers//validators` - Validators are are a type of controller middleware that are used to validate and sanitizee data before it gets to the services.
+  - Controllers can be merged into routes if they are only used in a single route.
+  - `/controllers//validators` - Validators are are a type of controller middleware that are used to validate and sanitize data before it gets to the services.
     - All exported functions use `validateXXX` as a naming scheme.
     - They validate the shape of data so typically there are no hits to the database or services.
     - For errors, either throw `400`|`500` for tampering, or errors in an array on the `Request` object for handling by other controllers.
 - `/routes` - Post requests should use CRUD prefixes in the url. E.G. `/create-topic`
   - Order routes by `read`, `create`, `update`, `delete`.
-  - Controllers can be merged into routes if they are only used in a single route.
-- `/data` - All exported functions use CRUD prefix names like `readData`, `updateData`, etc. Data functions are "dumb" and use simple CRUD functions. The services are smart.
+- `/data` - All exported functions use simple CRUD prefix names like `readData`, `updateData`, etc. Data functions are "dumb". The services are smart.
   - Data functions are the gateway to the persistence layer. All SQL/DB code is in these functions.
   - Prefer the following top-down order for exported functions: `read, create, update, delete`.
-  - Data entities shapes are defined here. E.G. `UserEntity`, `CarEntity`, `CustomerEntity`.
+  - Data entities' shapes are defined here. E.G. `UserEntity`, `CarEntity`, `CustomerEntity`.
     - Add `Entity` to the end of the type name.
 - `/services` - The business logic of the application. They are the gateway to the data model. Services are "smart" and data models are "dumb", and they provide the data to the controllers.
   - When deciding which service a function belongs to, consider the data. What data is being mutated, created, or read? What service does this data fit into the best?
-  - Prefer CRUD functions using the following prefixes: `get`, `add`, `set`, `remove`, defined in that top-down order.
+  - Prefer CRUD functions using the following prefixes: `get`, `add`, `set`, `remove`, defined in this top-down order.
 - `/views` - Templates and static view files.
-- `lib` - Third-party libraries that are not available on npm.
+- `/lib` - Third-party libraries that are not available on npm.
 - `/src` - Source files for any transpiled or compiled components.
   - Even for multiple discrete components, prefer to put them all in a single `/src` folder. Each component can have its own folder within `/src`.
 
