@@ -58,7 +58,7 @@ Jake Knerr © Ardisia Labs LLC
 - [Application Architecture](#application-architecture)
   - [General](#general)
   - [Client-Side](#client-side)
-  - [Node](#node)
+  - [Server, Node](#server-node)
 - [Minification](#minification)
 - [Comments and Documentation](#comments-and-documentation)
   - [Commenting Overview](#commenting-overview)
@@ -438,24 +438,30 @@ export class Car {
 export function driveCar() {}
 ```
 
-#### For exported identifiers, the name should include enough context to reduce risk of collision and provide clarity.
+#### For exported identifiers, the name should include enough context to reduce risk of collision and provide clarity in the imported file.
 
-> Why? Since the file that imports the identifier loses the contethe importing user loses the context,. Now, if you export an object, that provides the context.
+> Why? Since the file that imports the identifier loses the context the data had in the definitional file.
 
 ```javascript
-// example 1
-file: controllers.js
+// avoid
+// file: one.js
+// within the file this general name may be fine but when exported the
+// risk of collision is very high
 export function utils () {}
 
-import {utils}
+// file: two.js
+import { utils } from "one";
 
-utils.. risk of collision high
+// prefer
+// file: one.js
+// this carries additional context when exported
+export function authControllerUtils() {}
 
-prefer export function controllerUtils() {}
-
-// example 2
-export controllerUtils = {
-  add: function () {} // fine because the object is exported
+// also prefer
+// file: one.js
+// since the `utils` function is exported with parent object
+export authControllerUtils = {
+  utils: function () {}
 }
 ```
 
@@ -531,15 +537,15 @@ profile-page-template.ejs
 profile-page.ejs
 ```
 
-#### Steps to name a file:
+#### Preferred steps to name a file:
 
-Start by writing all of the file's parent folder names, separated by train-case. Then append a short as possible name (if necessary) that makes the file's purpose clear from the name alone and minimizes collision risk. Now, examine the folders in the file name: drop all the folders' names where the file's identity is still clear without it and there is no risk of collisions with other files.
+Start by writing all of the file's parent folder names. Then, append a short as possible name (if necessary) that makes the file's purpose clear from the name alone and minimizes collision risk. Now, examine the folders in the file name: drop all the folders' names where the file's identity is still clear without it and there is a low risk of collisions.
 
 Sometimes, this system may cause outer folders to be removed, sometimes the inner folders. Files in the same folder tend to have the same folder-prefix. This makes scanning the files easy.
 
-> Note, changing plural folder names to singular names and vice-versa is fine. For example, `/controllers` to `/controller-utils.js` is fine.
+> Note, changing plural folder names to singular names and vice-versa is fine. For example, `/controllers` to `/controller-utils.js` is fine. Do whatever makes sense.
 
-> Note, the risk of name collision involves many factors. Perhaps the files with the same name operate in totally different domains and I would be very unusual for me to be working on both at the same time. In such a case, having the same name is not a problem.
+> Note, the risk of name collision involves many factors. Perhaps the files with the same name operate in totally different domains and it would be very unusual for one to be working on both at the same time. In such a case, having the same name is not a problem.
 
 ```
 /controllers
@@ -549,7 +555,7 @@ Sometimes, this system may cause outer folders to be removed, sometimes the inne
     /controllers-subject-utils # prefixes required
 
 /icons
-  /thumbs-up.svg # prefix not required, icons-thumbs-up.svg not necessary
+  /thumbs-up.svg # prefix not required; thumbs-up.svg has low risk of collision
 ```
 
 ### Naming Folders
@@ -2492,10 +2498,10 @@ This was a challenging rule to create because good arguments can be made for eit
 However, on the balance of considerations, constructor functions are preferred:
 
 - They are idiomatic, which means that they work better in IDEs and other developers understand them better.
-- Many native objects require using them to override. See `Error` or the Web Components standard.
+- Many native objects require using constructor functions to override. See `Error` or the Web Components standard.
 - Having `this` available in the constructor function is useful to pass around to other functions.
 - `this` makes the object's entire API immediately available for use.
-- JSDoc in Typescript does NOT pickup the type implicitly returned by a factory function.
+- JSDoc in Typescript does NOT pickup the type implicitly returned by a factory function, but does for `class`.
 - Constructor functions are generally faster to create.
 
 As much as I like how factory functions can be more easily destructured and there is no dealing with `this`, the above reasons are compelling.
@@ -2503,7 +2509,7 @@ As much as I like how factory functions can be more easily destructured and ther
 ```javascript
 class Kls {
   constructor () {
-      // this is convenient to pass the new object
+      // `this` is convenient to pass the new object
       new Jingle(this);
     }
     x() {}
@@ -2548,7 +2554,7 @@ function createPerson() {
 }
 ```
 
-#### Move pure or pure-ish functions out of the factory function to increase performance.
+#### Move pure or pure-ish functions out of the factory functions to increase performance.
 
 > Why? This technique allows the functions to be shared across all instances of the object and only initialized once. Thus, increasing performance of the program.
 
@@ -3128,7 +3134,7 @@ In other words, prefer to keep files together based on what type of architectura
 - `src/utils`
 - `src/types` - shared type definitions, enums, classes, and jsdoc definitions that do not fit cleanly into a feature folder.
 
-### Node
+### Server, Node
 
 #### Divide up apps into folders with a file in the root directory named `server` that bootstraps the server.
 
@@ -3147,33 +3153,34 @@ server.js
 - `/public` - static assets.
 - `/types` - shared type definitions, enums, classes, and jsdoc definitions that do not fit cleanly into a feature folder.
 - `/utils` - shared utils.
-- `/controllers` - The only function types that can accept `req`, `res`,and `session` objects.
-  - Prefer thin handlers and put business logic in the services.
-    - HTTP request handlers should just concern themselves with HTTP and data shape validation.
+- `/controllers` - Functions that can accept `req`, `res`,and `session` objects.
+  - Prefer thin controllers and put business logic in the services.
+  - HTTP request handlers should just concern themselves with HTTP and data shape validation.
   - Responses prefer a JSON response with the following signature: `{ok: boolean, error: string|string[]}`;
   - Exported functions use `handleXXX` as a naming scheme.
-  - `/controllers//validators` - Validators are middleware used to validate data before it gets to the services.
-    - All exported functions use `validateXXX` as a naming scheme. They validate and sanitize data in requests.
+  - `/controllers//validators` - Validators are are a type of controller middleware that are used to validate and sanitizee data before it gets to the services.
+    - All exported functions use `validateXXX` as a naming scheme.
     - They validate the shape of data so typically there are no hits to the database or services.
-    - For errors, either throw `400`|`500` for tampering, or errors in an array on the `Request` object for handling by handlers.
+    - For errors, either throw `400`|`500` for tampering, or errors in an array on the `Request` object for handling by other controllers.
 - `/routes` - Post requests should use CRUD prefixes in the url. E.G. `/create-topic`
   - Order routes by `read`, `create`, `update`, `delete`.
+  - Controllers can be merged into routes if they are only used in a single route.
 - `/data` - All exported functions use CRUD prefix names like `readData`, `updateData`, etc. Data functions are "dumb" and use simple CRUD functions. The services are smart.
   - Data functions are the gateway to the persistence layer. All SQL/DB code is in these functions.
-  - Prefer the following top-down order for exported functions: `read//create/update/delete`.
-  - Data entities are defined in types. E.G. `UserEntity`, `Car`, `Customer`.
+  - Prefer the following top-down order for exported functions: `read, create, update, delete`.
+  - Data entities shapes are defined here. E.G. `UserEntity`, `CarEntity`, `CustomerEntity`.
     - Add `Entity` to the end of the type name.
-- `/services` - The functions that each feature uses to communicate with each-other, and they are the gateway to the data model. Services are "smart" and data models are "dumb". They also provide the data that the handlers use.
+- `/services` - The business logic of the application. They are the gateway to the data model. Services are "smart" and data models are "dumb", and they provide the data to the controllers.
   - When deciding which service a function belongs to, consider the data. What data is being mutated, created, or read? What service does this data fit into the best?
-  - Prefer the following top-down function order: `get/add/set/remove`.
-- `/controllers` - shared validators.
+  - Prefer CRUD functions using the following prefixes: `get`, `add`, `set`, `remove`, defined in that top-down order.
 - `/views` - Templates and static view files.
-- `/src` - Source files for any transpiled, compiled, or bundled libraries.
-  - Even for multiple discrete bundles, prefer to put them all in a single `/src` folder per feature.
+- `lib` - Third-party libraries that are not available on npm.
+- `/src` - Source files for any transpiled or compiled components.
+  - Even for multiple discrete components, prefer to put them all in a single `/src` folder. Each component can have its own folder within `/src`.
 
-#### Layer Based Architecture:
+#### Prefer a Layer Based Architecture.
 
-Server -> routes -> controllers -> service -> model -> data
+Bootstrap -> routes -> controllers -> service -> model -> data
 
 A lower layer does not call a higher layer.
 
