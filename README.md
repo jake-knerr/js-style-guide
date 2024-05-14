@@ -3147,6 +3147,10 @@ server.js
   - `src/utils`
   - `src/types`
 - `/public` - static assets.
+- `/scripts` - scripts that are used to build, test, deploy, or run tasks for the application.
+  - `/scripts/build`
+  - `/scripts/test`
+  - `/scripts/tasks`
 - `/types` - shared type definitions, enums, classes, and jsdoc definitions that do not fit cleanly into a feature folder.
 - `/utils` - shared utils.
 - `/controllers` - Functions that can accept `req`, `res`,and `next` objects.
