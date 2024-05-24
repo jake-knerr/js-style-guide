@@ -369,13 +369,15 @@ const saladHasRanch;
 
 ### Naming Functions
 
-#### When naming non-constructor functions, first consider the data that the function acts on. Next, follow the same naming instructions for data identifiers explained above. Next, add an action verb as a prefix to the name. The action verb should describe the function's operation on the data.
+#### When naming non-constructor functions, first consider the data that the function acts on. Next, follow the same naming instructions for data identifiers explained above. Next, add an action verb or preposition as a prefix to the name. The action verb or preposition should describe the function's operation on the data.
 
 This is the only place in identifier names that an action verb appears.
 
 Common examples are: "get", "set", "fetch", "remove", "add", "delete", "handle", etc.
 
 > Why an action verb? Functions are actions and behavior, just like verbs.
+
+> Why a preposition? Preposition typically relate different nouns which is akin to a function acting on data inputs and creating data outputs.
 
 ```javascript
 // discouraged
@@ -402,7 +404,7 @@ class foo {}
 class Foo {}
 ```
 
-#### It is acceptable to name functions without a leading verb if the function is a callback and not called directly.
+#### It is acceptable to name functions without a leading verb/preposition if the function is a callback and not called directly.
 
 In this context, the function is a "thing".
 
