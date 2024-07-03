@@ -57,7 +57,6 @@ Jake Knerr © Ardisia Labs LLC
   - [Restricted JavaScript Features](#restricted-javascript-features)
 - [Application Architecture](#application-architecture)
   - [General](#general)
-  - [Server, Node](#server-node)
 - [Minification](#minification)
 - [Comments and Documentation](#comments-and-documentation)
   - [Commenting Overview](#commenting-overview)
@@ -1744,6 +1743,20 @@ const event = { type: "enterDown" };
 function triggerEnterDown() {}
 ```
 
+#### Prefer to name functions that add listeners for specific event types _on_ or _on_ + the event name. For event emitters that dispatch generally on all events, prefer the name _subscribe_.
+
+```javascript
+// discouraged
+function addListener(type, handler) {}
+function addClickListener(handler) {}
+function addAllEventHandler(handler) {}
+
+// preferred
+function on(type, handler) {}
+function onClick(handler) {}
+function subscribe(handler) {}
+```
+
 #### Prefer to name event handler functions _handle_ + the event name. The entire name should use the standard lowerCamelCase convention.
 
 > Why? This technique makes it easy to recognize an event handler. Also, _handle_ signals the lazy nature of the callback function instead of making it appear that the event listener is eagerly triggering the function call.
@@ -3070,13 +3083,23 @@ Array.prototype.sum = () => {};
 
 ### General
 
-#### Services are modules that export functionality and manage an internal state and/or cause side-effects.
+#### Services are modules that provide interaction with business data and logic.
 
-Exported functionality that does not manage an internal state or cause side-effects are simply utilities.
+They focus on encapsulating specific functionality or business logic, often related to external interactions. Often, they provide functionality that is used by managers or components but do not directly manage the application state themselves.
 
-Note, the totality of the exported functions in a module are a singular "service". Each function is not a service, and the module does not export "services". The module exports a "service".
+They are not directly related to the application architecture and state management.
 
-#### Utilities are exported pure (or purish...) functions that are not specific to your application's business logic.
+#### Managers are modules that focus on managing the state and coordination within the application. They often deal with how data is stored and shared among components.
+
+Typically, they interact more directly with the application’s state and components. They might trigger updates or handle events that affect the state and aim to organize and control the flow of data and events within the application.
+
+In other words, managers are related to the application architecture and state management more than the business data and logic.
+
+#### Components are modules that are responsible for rendering the UI and handling user interactions.
+
+Components are often view code along with controllers that interact with the managers and services.
+
+#### Utilities are exported pure (or purish...) functions and classes that are not specific to your application's business logic.
 
 The utilities folder should be a toolbox that you can ideally lift and put in another project with minimal effort.
 
@@ -3128,57 +3151,77 @@ In other words, prefer to keep files together based on what type of architectura
   /testing-user.js
 ```
 
-### Server, Node
-
-#### Divide up apps into folders with a file in the root directory named `server` that bootstraps the server.
+#### Divide up apps into folders with a folder for "client" and "server" files.
 
 Optionally, a `.env` file at the root may be useful to store site secrets.
 
 ```
 #example
-/services
+/client
+  /src
+    /views
+      /components
+    /services
+    /managers
+    /utils
+    /types
+/server
+  /routes
+  /controllers
+  /data
+  /services
 .env
-server.js
 ```
 
-#### Common top-level folders:
+#### Common Project Folders:
 
 - `/client` - the client application.
-  - `src/components`
-  - `src/services` - Modules that add application functionality for different features of the application.
-  - `src/utils`
-  - `src/types`
-- `/public` - static assets.
-- `/scripts` - scripts that are used to build, test, deploy, or run tasks for the application.
-  - `/scripts/build`
-  - `/scripts/test`
-  - `/scripts/tasks`
-- `/types` - shared type definitions, enums, classes, and jsdoc definitions that do not fit cleanly into a feature folder.
-- `/utils` - shared utils.
-- `/controllers` - Functions that can accept `req`, `res`,and `next` objects.
-  - Prefer thin controllers and put business logic in the services.
-  - HTTP request handlers should just concern themselves with HTTP and data shape validation.
-  - Responses prefer a JSON response with the following signature: `{ok: boolean, error: string|string[]}`;
-  - Exported functions use `handleXXX` as a naming scheme.
-  - Controllers can be merged into routes if they are only used in a single route.
-  - `/controllers//validators` - Validators are are a type of controller middleware that are used to validate and sanitize data before it gets to the services.
-    - All exported functions use `validateXXX` as a naming scheme.
-    - They validate the shape of data so typically there are no hits to the database or services.
-    - For errors, either throw `400`|`500` for tampering, or errors in an array on the `Request` object for handling by other controllers.
-- `/routes` - Post requests should use CRUD prefixes in the url. E.G. `/create-topic`
-  - Order routes by `read`, `create`, `update`, `delete`.
-- `/data` - All exported functions use simple CRUD prefix names like `readData`, `updateData`, etc. Data functions are "dumb". The services are smart.
-  - Data functions are the gateway to the persistence layer. All SQL/DB code is in these functions.
-  - Prefer the following top-down order for exported functions: `read, create, update, delete`.
-  - Data entities' shapes are defined here. E.G. `UserEntity`, `CarEntity`, `CustomerEntity`.
-    - Add `Entity` to the end of the type name.
-- `/services` - The business logic of the application. They are the gateway to the data model. Services are "smart" and data models are "dumb", and they provide the data to the controllers.
-  - When deciding which service a function belongs to, consider the data. What data is being mutated, created, or read? What service does this data fit into the best?
-  - Prefer CRUD functions using the following prefixes: `get`, `add`, `set`, `remove`, defined in this top-down order.
-- `/views` - Templates and static view files.
-- `/lib` - Third-party libraries that are not available on npm.
-- `/src` - Source files for any transpiled or compiled components.
-  - Even for multiple discrete components, prefer to put them all in a single `/src` folder. Each component can have its own folder within `/src`.
+  - `/scripts`
+    - `/build` - Build scripts.
+  - `/src`
+    - `/assets` - Static assets.
+    - `/managers/`
+    - `/services`
+    - `/utils`
+    - `/types`
+    - `/views` - View components.
+    - `bootstrap.js` - Entry point for the client application.
+- `/server`
+  - `/controllers` - Functions that can accept `req`, `res`,and `next` objects.
+    - Prefer thin controllers and put business logic in the services.
+    - HTTP request handlers should just concern themselves with HTTP and data shape validation.
+    - Responses prefer a JSON response with the following signature: `{ok: boolean, error: string|string[]}`;
+    - Exported functions use `handleXXX` as a naming scheme.
+    - Controllers can be merged into routes if they are only used in a single route.
+    - `/controllers//validators` - Validators are are a type of controller middleware that are used to validate and sanitize data before it gets to the services.
+      - All exported functions use `validateXXX` as a naming scheme.
+      - They validate the shape of data so typically there are no hits to the database or services.
+      - For errors, either throw `400`|`500` for tampering, or errors in an array on the `Request` object for handling by other controllers.
+  - `/data` - All exported functions use simple CRUD prefix names like `readData`, `updateData`, etc. Data functions are "dumb". The services are smart.
+    - Data functions are the gateway to the persistence layer. All SQL/DB code is in these functions.
+    - Prefer the following top-down order for exported functions: `read, create, update, delete`.
+    - Data entities' shapes are defined here. E.G. `UserEntity`, `CarEntity`, `CustomerEntity`.
+      - Add `Entity` to the end of the type name.
+  - `/lib` - Third-party libraries that are not available on npm.
+  - `/logs`
+  - `/public` - Publicly available static assets.
+  - `/routes` - Post requests should use CRUD prefixes in the url. E.G. `/create-topic`
+    - Order routes by `read`, `create`, `update`, `delete`.
+  - `/scripts` - scripts that are used to build, test, deploy, or run tasks for the application.
+    - `/scripts/build`
+    - `/scripts/test`
+    - `/scripts/tasks`
+  - `/services` - The business logic of the application. They are the gateway to the data model. Services are "smart" and data models are "dumb", and they provide the data to the controllers.
+    - When deciding which service a function belongs to, consider the data. What data is being mutated, created, or read? What service does this data fit into the best?
+    - Prefer CRUD functions using the following prefixes: `get`, `add`, `set`, `remove`, defined in this top-down order.
+  - `/testing`
+  - `/types` - shared type definitions, enums, classes, and jsdoc definitions that do not fit cleanly into a feature folder.
+  - `/utils` - shared utils.
+  - `/views` - Templates and static view files.
+  - `/src` - Source files for any transpiled or compiled components.
+    - Even for multiple discrete components, prefer to put them all in a single `/src` folder. Each component can have its own folder within `/src`.
+  - `server.js` - Entry point for the server application.
+- `/utils` - Shared utilities.
 
 #### Prefer a Layer Based Architecture.
 
