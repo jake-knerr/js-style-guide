@@ -3095,6 +3095,8 @@ Typically, they interact more directly with the application’s state and compon
 
 In other words, managers are related to the application architecture and state management more than the business data and logic.
 
+Managers are typically more of a client-side concern, used by the components.
+
 #### Components are modules that are responsible for rendering the UI and handling user interactions.
 
 Components are often view code along with controllers that interact with the managers and services.
