@@ -3203,6 +3203,7 @@ Optionally, a `.env` file at the root may be useful to store site secrets.
     - Data functions are the gateway to the persistence layer. All SQL/DB code is in these functions.
     - Prefer the following top-down order for exported functions: `read, create, update, delete`.
     - Data entities' shapes are defined here. E.G. `UserEntity`, `CarEntity`, `CustomerEntity`.
+      - Only use the "entity" postfix if the data is mapped to a database schema.
       - Add `Entity` to the end of the type name.
   - `/lib` - Third-party libraries that are not available on npm.
   - `/logs`
@@ -3217,7 +3218,8 @@ Optionally, a `.env` file at the root may be useful to store site secrets.
     - When deciding which service a function belongs to, consider the data. What data is being mutated, created, or read? What service does this data fit into the best?
     - Prefer CRUD functions using the following prefixes: `get`, `add`, `set`, `remove`, defined in this top-down order.
   - `/testing`
-  - `/types` - shared type definitions, enums, classes, and jsdoc definitions that do not fit cleanly into a feature folder.
+  - `/types` - shared type definitions, enums, and jsdoc definitions that do not fit cleanly into a feature folder.
+    - Only typescript definitions, JSDoc, or enums go in this folder.
   - `/utils` - shared utils.
   - `/views` - Templates and static view files.
   - `/src` - Source files for any transpiled or compiled components.
