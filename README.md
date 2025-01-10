@@ -264,11 +264,9 @@ let loginFail;
 let loginSuccess;
 ```
 
-#### Do not use the terms "model", "view", or "controller" in the names of files, folders, variables, function, or anything else.
+#### Minimize the use of architectural terms like "model", "view", or "controller" in the names of files, folders, variables, function, or anything else.
 
-Names should be more specific than broad architectural abstractions.
-
-This doesn't mean that one should not use these terms in your code. It means that you should not use these terms in your names.
+Names should aim to be more specific than broad architectural abstractions.
 
 > Why? These terms are too generic and usually lead to confusion and poor organization.
 
@@ -455,12 +453,12 @@ import { utils } from "one";
 // prefer
 // file: one.js
 // this carries additional context when exported
-export function authControllerUtils() {}
+export function authUtils() {}
 
 // also prefer
 // file: one.js
 // since the `utils` function is exported with parent object
-export authControllerUtils = {
+export authUtils = {
   utils: function () {}
 }
 ```
@@ -545,7 +543,7 @@ profile-page.ejs
 
 Sometimes, this system may cause outer folders to be removed, sometimes the inner folders. Files in the same folder tend to have the same folder-prefix. This makes scanning the files easy.
 
-> Note, changing plural folder names to singular names and vice-versa is fine. For example, `/controllers` to `/controller-utils.js` is fine. Do whatever makes sense.
+> Note, changing plural folder names to singular names and vice-versa is fine. For example, `/services/services-utils` to `services//service-utils.js` is fine. Do whatever makes sense.
 
 > Note, the risk of name collision involves many factors. Perhaps two files with the same name operate in totally different domains and it would be very unusual for one to be working on both at the same time. In such a case, having the same name is not a problem.
 
@@ -748,7 +746,7 @@ function bToC();
 
 > Why? These rules are intended as a catch-all rule to help resolve how to order your code.
 
-> Why push public members towards the top? Public code should be obvious to a reader.
+> Why push public members towards the top? The API should be obvious to a reader.
 
 ```javascript
 // preferred - object properties above object methods
