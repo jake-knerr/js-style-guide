@@ -3154,54 +3154,52 @@ In other words, prefer to keep files together based on what type of architectura
 #### Common Project Folders:
 
 - `/client` - the client application.
-  - `/scripts`
-    - `/build` - Build scripts.
   - `/src`
     - `/assets` - Static assets.
     - `/managers/`
     - `/services`
     - `/utils`
-    - `/types`
     - `/views` - View components.
     - `bootstrap.js` - Entry point for the client application.
-- `/server`
-  - `/controllers` - Functions that can accept `req`, `res`,and `next` objects.
-    - Prefer thin controllers and put business logic in the services.
-    - HTTP request handlers should just concern themselves with HTTP and data shape validation.
-    - Responses prefer a JSON response with the following signature: `{ok: boolean, error: string|string[]}`;
-    - Exported functions use `handleXXX` as a naming scheme.
-    - Controllers can be merged into routes if they are only used in a single route.
-    - `/controllers//validators` - Validators are are a type of controller middleware that are used to validate and sanitize data before it gets to the services.
-      - All exported functions use `validateXXX` as a naming scheme.
-      - They validate the shape of data so typically there are no hits to the database or services.
-      - For errors, either throw `400`|`500` for tampering, or errors in an array on the `Request` object for handling by other controllers.
-  - `/data` - All exported functions use simple CRUD prefix names like `readData`, `updateData`, etc. Data functions are "dumb". The services are smart.
-    - Data functions are the gateway to the persistence layer. All SQL/DB code is in these functions.
-    - Prefer the following top-down order for exported functions: `read, create, update, delete`.
-    - Data entities' shapes are defined here. E.G. `UserEntity`, `CarEntity`, `CustomerEntity`.
-      - Only use the "entity" postfix if the data is mapped to a database schema.
-      - Add `Entity` to the end of the type name.
-  - `/lib` - Third-party libraries that are not available on npm.
-  - `/logs`
-  - `/public` - Publicly available static assets.
-  - `/routes` - Post requests should use CRUD prefixes in the url. E.G. `/create-topic`
-    - Order routes by `read`, `create`, `update`, `delete`.
-  - `/scripts` - scripts that are used to build, test, deploy, or run tasks for the application.
-    - `/scripts/build`
-    - `/scripts/test`
-    - `/scripts/tasks`
-  - `/services` - The business logic of the application. They are the gateway to the data model. Services are "smart" and data models are "dumb", and they provide the data to the controllers.
-    - When deciding which service a function belongs to, consider the data. What data is being mutated, created, or read? What service does this data fit into the best?
-    - Prefer CRUD functions using the following prefixes: `get`, `add`, `set`, `remove`, defined in this top-down order.
-  - `/testing`
-  - `/types` - shared type definitions, enums, and jsdoc definitions that do not fit cleanly into a feature folder.
-    - Only typescript definitions, JSDoc, or enums go in this folder.
-  - `/utils` - shared utils.
-  - `/views` - Templates and static view files.
-  - `/src` - Source files for any transpiled or compiled components.
-    - Even for multiple discrete components, prefer to put them all in a single `/src` folder. Each component can have its own folder within `/src`.
-  - `server.js` - Entry point for the server application.
-- `/utils` - Shared utilities.
+  - `/types`
+- `/controllers` - Functions that can accept `req`, `res`,and `next` objects.
+  - Prefer thin controllers and put business logic in the services.
+  - HTTP request handlers should just concern themselves with HTTP and data shape validation.
+  - Responses prefer a JSON response with the following signature: `{ok: boolean, error: string|string[]}`;
+  - Exported functions use `processXXX` as a naming scheme.
+  - Controllers can be merged into routes if they are only used in a single route.
+  - `/controllers//validators` - Validators are are a type of controller middleware that are used to validate and sanitize data before it gets to the services.
+    - All exported functions use `validateXXX` as a naming scheme.
+    - They validate the shape of data so typically there are no hits to the database or services.
+    - For errors, either throw `400`|`500` for tampering, or errors in an array on the `Request` object for handling by other controllers.
+- `/data` - All exported functions use simple CRUD prefix names like `readData`, `updateData`, etc. Data functions are "dumb". The services are smart.
+  - Data functions are the gateway to the persistence layer. All SQL/DB code is in these functions.
+  - Prefer the following top-down order for exported functions: `read, create, update, delete`.
+  - Data entities' shapes are defined here. E.G. `UserEntity`, `CarEntity`, `CustomerEntity`.
+    - Only use the "entity" postfix if the data is mapped to a database schema.
+    - Add `Entity` to the end of the type name.
+- `/lib` - Third-party libraries that are not available on npm.
+- `/logs`
+- `/public` - Publicly available static assets.
+- `/routes` - Post requests should use CRUD prefixes in the url. E.G. `/create-topic`
+  - Order routes by `read`, `create`, `update`, `delete`.
+- `/scripts` - scripts that are used to build, test, deploy, or run tasks for the application.
+  - `/scripts/build`
+  - `/scripts/test`
+  - `/scripts/tasks`
+- `/scratch` - Random thoughts, files, mockups.
+- `/scripts`
+  - `/build` - Build scripts.
+  - `/tasks` - Scripts run at specified intervals.
+- `/services` - The business logic of the application. They are the gateway to the data model. Services are "smart" and data models are "dumb", and they provide the data to the controllers.
+  - When deciding which service a function belongs to, consider the data. What data is being mutated, created, or read? What service does this data fit into the best?
+  - Prefer CRUD functions using the following prefixes: `get`, `add`, `set`, `remove`, defined in this top-down order.
+- `/testing`
+- `/types` - shared type definitions, enums, and jsdoc definitions that do not fit cleanly into a feature folder.
+  - Only typescript definitions, JSDoc, or enums go in this folder.
+- `/utils` - shared utils.
+- `/views` - Templates and static view files.
+- `server.js` - Entry point for the server application.
 
 #### Prefer a Layer Based Architecture.
 
@@ -3917,7 +3915,7 @@ Some criteria for a functional-lite approach:
   - Write small, unary functions that have outputs that can serve as inputs to other functions when possible.
   - Keep function signatures simple to generalize inputs.
 - Prefer the use of pure functions.
-  - Note, that a function is pure even if impure techniques are used in the function body as long as the impure techniques are not observable outside the function.
+  - Note, that a function is considered pure here even if impure techniques are used in the function body as long as the impure techniques are not observable outside the function.
 - Prefer idempotent functions.
 - When triggering side-effects, try to isolate them and make them obvious.
 - Use a point-free style if convenient, but do not get carried away.
