@@ -3105,7 +3105,7 @@ The utilities folder should be a toolbox that you can ideally lift and put in an
 
 #### Helpers are modules that export functionality that is intended to be used in another module.
 
-Helpers are a way to pull out code from a module to make it smaller more readable. They are created with a clear idea of where they will be used
+Helpers are a way to pull out code from a module to make it smaller and more readable. They are created with a clear idea of where they will be used
 
 Keep helper modules close to the modules that they are used within. Typically, they are stored inside a sub-folder of the folder containing the consumer module.
 
@@ -3149,28 +3149,6 @@ In other words, prefer to keep files together based on what type of architectura
   /testing-api.js
   /testing-products.js
   /testing-user.js
-```
-
-#### Divide up apps into folders with a folder for "client" and "server" files.
-
-Optionally, a `.env` file at the root may be useful to store site secrets.
-
-```
-#example
-/client
-  /src
-    /views
-      /components
-    /services
-    /managers
-    /utils
-    /types
-/server
-  /routes
-  /controllers
-  /data
-  /services
-.env
 ```
 
 #### Common Project Folders:
