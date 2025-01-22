@@ -3253,16 +3253,6 @@ Such files should have the postfix "-type" in the file name.
 
 If a type is used only in a single file, it is acceptable to define it locally with source code.
 
-#### Global JSDoc types files should include "-type" as a postfix to the file name.
-
-```
-// avoid
-data-things.js
-
-// good
-data-things-types.js
-```
-
 #### Map database schema to types defined in JSDoc. Such types are "Entity" types.
 
 Such types have "Entity" as a postfix and are typically placed in the `data` folder.
@@ -3293,6 +3283,16 @@ If an index is placed on more than 1 column, place the property's position in th
  * @prop {string} username FK fk_identity 1
  * @prop {string} email FK fk_identity 2
  */
+```
+
+#### Global JSDoc types files should include "-type" as a postfix to the file name.
+
+```
+// avoid
+data-things.js
+
+// good
+data-things-types.js
 ```
 
 #### For files that only export enums, name such files with a "-enums" postfix.
