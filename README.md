@@ -3894,7 +3894,7 @@ function bar() {}
 
 #### For API routes, use a `@returns {}` doclet to document the data that can be returned to the requesting client.
 
-> Why? Strictly speaking, a route handler function doesn't `return` data. Instead, it sends it back to a client. Since JSDoc lacks an `@api` doclet type, use `@returns` instead.
+> Why? Strictly speaking, a route handler function doesn't `return` data. Instead, it sends it back to a client. Since JSDoc lacks an `@api` doclet type, use `@returns` instead. The purpose is clear from context.
 
 ```javascript
 // good
@@ -3905,9 +3905,9 @@ function bar() {}
  * }}
  */
 router.get("/data", (req, res, next) => {
-  if (!req.session) return res.json({ok: false, msg: "error})
+  if (!req.session) return res.json({ ok: false, msg: "error })
 
-  res.json({ok: true});
+  res.json({ ok: true });
 })
 ```
 
