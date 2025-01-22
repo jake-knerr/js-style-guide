@@ -2941,18 +2941,6 @@ export function addNumbers() {}
 export function addResizeListener() {}
 ```
 
-#### For files that only export enums, name such files with a "-enums" postfix.
-
-> Why? This makes the purpose of such files clear.
-
-```
-// avoid
-data-enum-types.js
-
-// good
-data-enums.js
-```
-
 **[⬆ Table of Contents](#toc)**
 
 ---
@@ -3220,6 +3208,34 @@ Bootstrap -> routes -> controllers -> service -> model -> data
 A lower layer does not call a higher layer.
 
 > Why can't a lower layer call a higher layer? This creates circular dependencies.
+
+#### When a JSDoc type is used in more than one file, define such types globally in a file with only JSDoc definitions.
+
+Such files should have the postfix "-type" in the file name.
+
+If a type is used only in a single file, it is acceptable to define it locally with source code.
+
+#### Global JSDoc types files should include "-type" as a postfix to the file name.
+
+```
+// avoid
+data-things.js
+
+// good
+data-things-types.js
+```
+
+#### For files that only export enums, name such files with a "-enums" postfix.
+
+> Why? This makes the purpose of such files clear.
+
+```
+// avoid
+data-enum-types.js
+
+// good
+data-enums.js
+```
 
 **[⬆ Table of Contents](#toc)**
 
@@ -3739,8 +3755,6 @@ const anotherFoo
 /** @type {any} */
 ```
 
-#### Put global types in a global types file.
-
 **[⬆ Table of Contents](#toc)**
 
 ---
@@ -3894,14 +3908,6 @@ function foo(x) {}
  * @typedef {Object} Foo
  */
 ```
-
-#### When a type is used in more than one file, define such types globally in a file with only JSDoc definitions.
-
-Such files should have the postfix "-type" in the file name.
-
-If a type is used only in a single file, it is acceptable to define it locally with source code.
-
-#### Global JSDoc types files should include "-type" as a postfix to the file name.
 
 **[⬆ Table of Contents](#toc)**
 
