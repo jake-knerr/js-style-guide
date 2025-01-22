@@ -3117,38 +3117,78 @@ They do not need to have the `helper` suffix in their name.
 
 #### Prefer to co-locate modules by technical category rather than functionality (what they do).
 
-In other words, prefer to keep files together based on what type of architectural role they satisfy.
+In other words, prefer to keep files together based on what type of architectural role they satisfy. These folders are known as "technical category folders."
 
 > Why? Putting domain-related files together results in too many folders, and I think in terms of technical categories.
 
 ```
-#discouraged
+# discouraged
 /api
   /api-routes.js
-  /api-schema.js
-  /api-tests.js
 /products
   /products-routes.js
-  /products-schema.js
-  /products-tests.js
 /user
   /user-routes.js
-  /user-schema.js
-  /user-tests.js
 
-#preferred
-/routes/
+# preferred
+/routes
   /routes-api.js
-  /routes-products.js
-  /routes-user.js
-/schema/
+/schema
   /schema-api.js
-  /schema-products.js
-  /schema-user.js
 /testing
   /testing-api.js
-  /testing-products.js
-  /testing-user.js
+```
+
+#### Within a technical category folder, prefer to place files in domain specific folders.
+
+If there is only one domain, then adding domain folders is not necessary. Nesting sub-domain folders within domain folders is allowed. These folders are known as "domain specific folders."
+
+```
+# discouraged
+/routes
+  /routes-api.js
+  /routes-public-web.js
+
+# preferred
+/routes
+  /api
+    /routes-api.js
+  /public-web
+    /routes-public.js
+```
+
+#### Within domain specific folders, files that fall within a generalized technical category can go into the appropriate folder.
+
+Folders for such technical categories are utils, validators, types, cache, etc.
+
+If a file is used in multiple domain specific folders, put such files in the closest parent folder.
+
+```
+# discouraged
+/routes
+  /routes-utils.js
+/routes
+  /api
+    /routes/api/routes-api-utils.js
+
+# preferred
+/routes
+  /routes
+    /utils
+      /routes-utils.js
+/routes
+  /api
+    /utils
+      /routes-api-utils.js
+
+# shared files
+/routes/
+  /utils
+    /routes-utils.js
+/routes
+  /api
+    /utils
+      /routes-api-utils.js
 ```
 
 #### Common Project Folders:
