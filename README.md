@@ -3117,9 +3117,9 @@ They do not need to have the `helper` suffix in their name.
 
 #### For top-level folders, prefer to co-locate modules by technical category rather than functionality (what they do).
 
-In other words, for top-level project folders prefer to keep files together based on what type of architectural role they satisfy. These folders are known as "technical category folders."
+In other words, for top-level project folders prefer to keep files together based on what type of architectural role they satisfy. These folders are known as "technical-category folders."
 
-> Why? Putting domain-related files together results in too many folders, and I think in terms of technical categories.
+> Why? Because developers tend to think in terms of technical categories when organizing project files.
 
 ```
 # discouraged
@@ -3139,7 +3139,7 @@ In other words, for top-level project folders prefer to keep files together base
   /testing-api.js
 ```
 
-#### Within a technical category folder, prefer to place domain-specific files in domain-specific folders.
+#### Within a technical-category folder, prefer to place domain-specific files in domain-specific folders.
 
 If there is only one domain, then adding domain folders is not necessary. Nesting sub-domain folders within domain folders is allowed. These folders are known as "domain-specific folders."
 
