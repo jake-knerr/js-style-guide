@@ -3820,6 +3820,25 @@ export function foo() {
 function bar() {}
 ```
 
+#### For API routes, use a `@returns {}` doclet to document the data that can be returned to the requesting client.
+
+> Why? Strictly speaking, a route handler function doesn't `return` data. Instead, it sends it back to a client. Since JSDoc lacks an `@api` doclet type, use `@returns` instead.
+
+```javascript
+// good
+/**
+ * @returns {{
+ *  ok: boolean,
+ *  msg?: "error"
+ * }}
+ */
+router.get("/data", (req, res, next) => {
+  if (!req.session) return res.json({ok: false, msg: "error})
+
+  res.json({ok: true});
+})
+```
+
 #### Documenting more than what is necessary is discouraged.
 
 Also, if the name of an API property/method makes its purpose obvious, then there is no need to write a description.
