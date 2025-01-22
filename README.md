@@ -3115,7 +3115,7 @@ They do not need to have the `helper` suffix in their name.
 
 > Why? This way, related modules/files will be close to one-another and easily accessible in the file tree.
 
-#### Prefer to co-locate modules by technical category rather than functionality (what they do).
+#### For top-level folders, prefer to co-locate modules by technical category rather than functionality (what they do).
 
 In other words, prefer to keep files together based on what type of architectural role they satisfy. These folders are known as "technical category folders."
 
@@ -3139,9 +3139,11 @@ In other words, prefer to keep files together based on what type of architectura
   /testing-api.js
 ```
 
-#### Within a technical category folder, prefer to place files in domain specific folders.
+#### Within a technical category folder, prefer to place domain-specific files in domain-specific folders.
 
-If there is only one domain, then adding domain folders is not necessary. Nesting sub-domain folders within domain folders is allowed. These folders are known as "domain specific folders."
+If there is only one domain, then adding domain folders is not necessary. Nesting sub-domain folders within domain folders is allowed. These folders are known as "domain-specific folders."
+
+> What is domain-specific? Files that relate to a particular aspect of the business logic of your application. For example, the routes for the API of your application pertain to the domain of the API within the technical category of routing.
 
 ```
 # discouraged
@@ -3157,7 +3159,7 @@ If there is only one domain, then adding domain folders is not necessary. Nestin
     /routes-public.js
 ```
 
-#### Within domain specific folders, files that fall within a generalized technical category can go into the appropriate folder.
+#### Within domain-specific folders, files that fall within a generalized technical category can go into a separate folder.
 
 Folders for such technical categories are utils, validators, types, cache, etc.
 
