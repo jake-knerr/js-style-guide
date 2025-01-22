@@ -3117,7 +3117,7 @@ They do not need to have the `helper` suffix in their name.
 
 #### For top-level folders, prefer to co-locate modules by technical category rather than functionality (what they do).
 
-In other words, prefer to keep files together based on what type of architectural role they satisfy. These folders are known as "technical category folders."
+In other words, for top-level project folders prefer to keep files together based on what type of architectural role they satisfy. These folders are known as "technical category folders."
 
 > Why? Putting domain-related files together results in too many folders, and I think in terms of technical categories.
 
@@ -3235,7 +3235,7 @@ If a file is used in multiple domain specific folders, put such files in the clo
   - When deciding which service a function belongs to, consider the data. What data is being mutated, created, or read? What service does this data fit into the best?
   - Prefer CRUD functions using the following prefixes: `get`, `add`, `set`, `remove`, defined in this top-down order.
 - `/testing`
-- `/types` - shared type definitions, enums, and jsdoc definitions that do not fit cleanly into a feature folder.
+- `/types` - shared type definitions, enums, and JSDoc definitions that do not fit cleanly into a feature folder.
   - Only typescript definitions, JSDoc, or enums go in this folder.
 - `/utils` - shared utils.
 - `/views` - Templates and static view files.
