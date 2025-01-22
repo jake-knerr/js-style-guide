@@ -3139,7 +3139,7 @@ In other words, for top-level project folders, prefer to keep files together bas
   /testing-api.js
 ```
 
-#### Within a technical-category folder, prefer to place domain-specific files in domain-specific folders.
+#### Within a technical-category folder, at one's discretion, domain-specific files can be placed in domain-specific folders.
 
 If there is only one domain, then adding domain folders is not necessary. Nesting sub-domain folders within domain folders is allowed. These folders are known as "domain-specific folders."
 
