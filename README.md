@@ -3176,8 +3176,6 @@ In other words, prefer to keep files together based on what type of architectura
   - Data functions are the gateway to the persistence layer. All SQL/DB code is in these functions.
   - Prefer the following top-down order for exported functions: `read, create, update, delete`.
   - Data entities' shapes are defined here. E.G. `UserEntity`, `CarEntity`, `CustomerEntity`.
-    - Only use the "entity" postfix if the data is mapped to a database schema.
-    - Add `Entity` to the end of the type name.
 - `/lib` - Third-party libraries that are not available on npm.
 - `/logs`
 - `/public` - Publicly available static assets.
@@ -3223,6 +3221,38 @@ data-things.js
 
 // good
 data-things-types.js
+```
+
+#### Map database schema to types defined in JSDoc. Such types are "Entity" types.
+
+Such types have "Entity" as a postfix and are typically placed in the `data` folder.
+
+```javascript
+// good
+
+// /data/types/data-types.js
+
+/**
+ * @typedef {Object} UserEntity
+ * @prop {number} id
+ * @prop {string} username
+ */
+```
+
+#### For entity types, indicate which properties have indexes. Use PK for the primary key and FK for other indexes.
+
+For non-primary indexes, write the name of the index after "FK". The name of these indexes should begin with "fk\_".
+
+If an index is placed on more than 1 column, place the property's position in the index after the name.
+
+```javascript
+// good
+/**
+ * @typedef {Object} UserEntity
+ * @prop {number} id PK
+ * @prop {string} username FK fk_identity 1
+ * @prop {string} email FK fk_identity 2
+ */
 ```
 
 #### For files that only export enums, name such files with a "-enums" postfix.
