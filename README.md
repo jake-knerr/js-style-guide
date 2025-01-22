@@ -2941,6 +2941,18 @@ export function addNumbers() {}
 export function addResizeListener() {}
 ```
 
+#### For files that only export enums, name such files with a "-enums" postfix.
+
+> Why? This makes the purpose of such files clear.
+
+```
+// avoid
+data-enum-types.js
+
+// good
+data-enums.js
+```
+
 **[⬆ Table of Contents](#toc)**
 
 ---
@@ -3386,12 +3398,14 @@ function getColor(foo) {}
 
 #### Write implementation comments:
 
-- **In lowercase only (this includes code in the comment).**
+- **Prefer lowercase.**
 - **Use punctuation only when necessary for clarity.**
 - **Sentence fragments are permissible if the meaning of the fragment is clear.**
 - **Separate sentences and sentence fragments with semicolons.**
 
 **Otherwise, use formal grammar, e.g., verb conjugation, subject-verb agreement, etc. Focus on clarity.**
+
+Lowercase is preferred, but using uppercase is acceptable if used for a reason. Perhaps the comment is quoting a function with uppercase letters in the name.
 
 This rule only applies if it makes sense with regard to one's natural language. This author intends no English language chauvinism.
 
@@ -3839,32 +3853,6 @@ class Foo {
 }
 ```
 
-#### Creating files that contain only JSDoc annotations and no source code is discouraged. Instead, put JSDoc annotations in files with source code.
-
-The exception is for global types that must be placed in files without source code, imports, or exports.
-
-> Why? Files with JSDoc and no source code are unnecessary and confusing unless one is creating global types.
-
-#### For global types that are in files without source code, prefer to the name them "global-types.(js|ts)".
-
-> Why? This convention makes it clear that the file contains global types.
-
-#### When creating types, leave the word "type" off the name.
-
-> Why? Prefer names that describe what something does rather than what it is. Also, the fact that it is a type is already clear from the `@typedef` annotation.
-
-```javascript
-// discouraged
-/**
- * @typedef {Object} FooType
- */
-
-// preferred
-/**
- * @typedef {Object} Foo
- */
-```
-
 #### Prefer to place JSDoc annotations directly above where they are first referenced.
 
 ```javascript
@@ -3890,6 +3878,30 @@ function foo(x) {}
 ```javascript
 /** @typedef {import ("./Component.js").Component} Component */
 ```
+
+#### When creating types in JSDoc, leave the word "type" off the name.
+
+> Why? Prefer names that describe what something does rather than what it is. Also, the fact that it is a type is already clear from the `@typedef` annotation.
+
+```javascript
+// discouraged
+/**
+ * @typedef {Object} FooType
+ */
+
+// preferred
+/**
+ * @typedef {Object} Foo
+ */
+```
+
+#### When a type is used in more than one file, define such types globally in a file with only JSDoc definitions.
+
+Such files should have the postfix "-type" in the file name.
+
+If a type is used only in a single file, it is acceptable to define it locally with source code.
+
+#### Global JSDoc types files should include "-type" as a postfix to the file name.
 
 **[⬆ Table of Contents](#toc)**
 
