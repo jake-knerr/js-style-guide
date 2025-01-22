@@ -3117,7 +3117,7 @@ They do not need to have the `helper` suffix in their name.
 
 #### For top-level folders, prefer to co-locate modules by technical category rather than functionality (what they do).
 
-In other words, for top-level project folders prefer to keep files together based on what type of architectural role they satisfy. These folders are known as "technical-category folders."
+In other words, for top-level project folders, prefer to keep files together based on what type of architectural role they satisfy. These folders are known as "technical-category folders."
 
 > Why? Because developers tend to think in terms of technical categories when organizing project files.
 
@@ -3143,7 +3143,7 @@ In other words, for top-level project folders prefer to keep files together base
 
 If there is only one domain, then adding domain folders is not necessary. Nesting sub-domain folders within domain folders is allowed. These folders are known as "domain-specific folders."
 
-> What is domain-specific? Files that relate to a particular aspect of the business logic of your application. For example, the routes for the API of your application pertain to the domain of the API within the technical category of routing.
+> What is domain specific? Files that relate to a particular aspect of the business logic of your application. For example, the routes for the API of your application pertain to the domain of the API within the technical category of routing.
 
 ```
 # discouraged
@@ -3162,8 +3162,6 @@ If there is only one domain, then adding domain folders is not necessary. Nestin
 #### Within domain-specific folders, files that fall within a generalized technical category can go into a separate folder.
 
 Folders for such technical categories are utils, validators, types, cache, etc.
-
-If a file is used in multiple domain specific folders, put such files in the closest parent folder.
 
 ```
 # discouraged
